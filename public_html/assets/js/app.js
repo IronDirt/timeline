@@ -826,6 +826,27 @@ function renderTimeline() {
   }
 
   const sorted = [...timelineData].sort(compareEventsByDate);
+
+  // Add default Year 1 marker if BC years are present and Year 1 is missing
+  if (sorted.length > 0) {
+    const years = sorted.map((e) => getEventSortParts(e).year);
+    const minYear = Math.min(...years);
+    const hasYear1 = sorted.some((e) => getEventSortParts(e).year === 1);
+
+    if (minYear < 1 && !hasYear1) {
+      sorted.push({
+        id: "virtual-year-1",
+        virtual: true,
+        useCustomYear: true,
+        customYear: 1,
+        title: "",
+        text: "",
+        eraTag: "none",
+      });
+      sorted.sort(compareEventsByDate);
+    }
+  }
+
   const maxZoomLevel = Math.max(0, sorted.length - 1);
   zoomLevel = Math.min(zoomLevel, maxZoomLevel);
   timelineEl.innerHTML = "";
@@ -838,13 +859,7 @@ function renderTimeline() {
 
     const item = document.createElement("article");
     item.className = "timeline-item";
-    item.dataset.eventId = eventItem.id;
-    item.dataset.pinned = String(isPinned);
-
-    const imageBlock = eventItem.imageData
-      ? `<img class="timeline-image" src="${eventItem.imageData}" alt="${escapeHtml(eventItem.title)}" loading="lazy" decoding="async">`
-      : "";
-
+    
     const hasCustomYear =
       eventItem.useCustomYear && Number.isInteger(eventItem.customYear);
     const formattedDate = hasCustomYear
@@ -854,6 +869,34 @@ function renderTimeline() {
           showMonth: eventItem.showMonth !== false,
           eraTag: eventItem.eraTag || "none",
         });
+
+    const isYear1 =
+      (eventItem.useCustomYear && eventItem.customYear === 1) ||
+      (!eventItem.useCustomYear &&
+        typeof eventItem.date === "string" &&
+        eventItem.date.startsWith("0001"));
+
+    if (isYear1) {
+      item.classList.add("is-year-1");
+    }
+
+    if (eventItem.virtual) {
+      item.classList.add("is-virtual-marker");
+      item.innerHTML = `
+        <div class="timeline-item-content">
+          <div class="timeline-date">${formattedDate}</div>
+        </div>
+      `;
+      timelineEl.appendChild(item);
+      return;
+    }
+
+    item.dataset.eventId = eventItem.id;
+    item.dataset.pinned = String(isPinned);
+
+    const imageBlock = eventItem.imageData
+      ? `<img class="timeline-image" src="${eventItem.imageData}" alt="${escapeHtml(eventItem.title)}" loading="lazy" decoding="async">`
+      : "";
 
     item.innerHTML = `
 				<button type="button" class="timeline-pin-btn${isPinned ? " is-pinned" : ""}" data-action="pin" data-index="${originalIndex}" aria-label="${isPinned ? t("pinRemoveLabel") : t("pinAddLabel")}" title="${isPinned ? t("pinRemoveTitle") : t("pinAddTitle")}">
