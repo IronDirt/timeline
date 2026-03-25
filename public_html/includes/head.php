@@ -41,6 +41,7 @@
 	<meta name="twitter:image" content="https://timeline.salernohub.net/assets/img/og-image.svg">
 	<meta name="application-name" content="Timeline SalernoHub">
 	<meta name="theme-color" content="#e9e5de" id="meta-theme-color">
+	<meta name="mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 	<script>
