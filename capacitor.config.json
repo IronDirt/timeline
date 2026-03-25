@@ -1,0 +1,9 @@
+{
+  "appId": "net.salernohub.timeline",
+  "appName": "Timeline",
+  "webDir": "public_html",
+  "server": {
+    "url": "https://timeline.salernohub.net/",
+    "cleartext": false
+  }
+}
