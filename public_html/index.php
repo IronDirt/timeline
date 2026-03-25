@@ -8,8 +8,11 @@ require __DIR__ . '/includes/config.php';
 // ── Inizializza directory storage ──────────────────────────────────
 $storageDir = timeline_storage_dir();
 if (!is_dir($storageDir)) {
-	mkdir($storageDir, 0775, true);
+	if (!@mkdir($storageDir, 0775, true)) {
+		// Non blocchiamo subito, ma l'API darà errore se cercherà di scrivere
+	}
 }
+
 
 // ════════════════════════════════════════════════════════════════════
 // API: Eliminazione timeline online
@@ -57,9 +60,13 @@ if (($_GET['api'] ?? '') === 'delete' && ($_SERVER['REQUEST_METHOD'] ?? 'GET') =
 		exit;
 	} catch (Throwable $error) {
 		http_response_code(500);
-		echo json_encode(['ok' => false, 'message' => 'Errore durante la cancellazione online.'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+		echo json_encode([
+			'ok' => false,
+			'message' => 'Errore durante la cancellazione online: ' . $error->getMessage()
+		], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 		exit;
 	}
+
 }
 
 // ════════════════════════════════════════════════════════════════════
@@ -127,9 +134,24 @@ if (($_GET['api'] ?? '') === 'save' && ($_SERVER['REQUEST_METHOD'] ?? 'GET') ===
 			'version' => 1
 		];
 
-		file_put_contents($filePath, json_encode($record, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+		if (!is_dir($storageDir)) {
+			throw new Exception("La cartella di storage non esiste e non può essere creata automaticamente. Verifica i permessi della cartella public_html.");
+		}
+		if (!is_writable($storageDir)) {
+			throw new Exception("La cartella di storage '" . basename($storageDir) . "' non è scrivibile dal server. Verifica i permessi (chmod/chown).");
+		}
+
+		$jsonRecord = json_encode($record, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+		if ($jsonRecord === false) {
+			throw new Exception("Errore durante la codifica JSON dei dati.");
+		}
+
+		if (file_put_contents($filePath, $jsonRecord) === false) {
+			throw new Exception("Impossibile scrivere il file sulla VPS. Controlla lo spazio disco o i permessi di scrittura.");
+		}
 
 		$urls = timeline_build_share_urls($timelineId, $adminToken, $viewerToken);
+
 
 		echo json_encode([
 			'ok' => true,
@@ -144,10 +166,11 @@ if (($_GET['api'] ?? '') === 'save' && ($_SERVER['REQUEST_METHOD'] ?? 'GET') ===
 		http_response_code(500);
 		echo json_encode([
 			'ok' => false,
-			'message' => 'Errore durante il salvataggio online.'
+			'message' => 'Errore durante il salvataggio online: ' . $error->getMessage()
 		], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 		exit;
 	}
+
 }
 
 // ════════════════════════════════════════════════════════════════════

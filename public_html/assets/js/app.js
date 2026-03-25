@@ -1879,6 +1879,5 @@ removeEventImageBtn.addEventListener("click", () => {
   renderTimeline();
   updateTimelineLineWidth();
   showStatus(t("readyStatus"));
-  document.getElementById("copyrightYear").textContent =
-    new Date().getFullYear();
 })();
+

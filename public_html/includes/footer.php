@@ -7,8 +7,9 @@
  */
 ?>
 	<footer class="site-footer">
-		<p>&copy; <span id="copyrightYear"></span> <a href="https://timeline.salernohub.net" rel="noopener">timeline.salernohub.net</a></p>
+		<p>&copy; <?php echo date('Y'); ?> <a href="https://timeline.salernohub.net" rel="noopener">timeline.salernohub.net</a></p>
 	</footer>
+
 	</div>
 
 	<script>
