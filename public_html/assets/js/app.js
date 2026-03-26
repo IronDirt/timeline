@@ -251,11 +251,12 @@ const eventShowDayInput = document.getElementById("eventShowDay");
 const eventShowMonthInput = document.getElementById("eventShowMonth");
 const eventUseCustomYearInput = document.getElementById("eventUseCustomYear");
 const eventCustomYearInput = document.getElementById("eventCustomYear");
-const eventEraTagInput = document.getElementById("eventEraTag");
+const eraTagChristian = document.getElementById("eraTagChristian");
+const eraTagCommon = document.getElementById("eraTagCommon");
 const eventTitleInput = document.getElementById("eventTitle");
 const eventTextInput = document.getElementById("eventText");
 const eventImageInput = document.getElementById("eventImage");
-const eventImageTrigger = document.getElementById("eventImageTrigger");
+const eventImageDropZone = document.getElementById("eventImageDropZone");
 const removeEventImageBtn = document.getElementById("removeEventImageBtn");
 const eventImageName = document.getElementById("eventImageName");
 const eventImagePreviewWrap = document.getElementById("eventImagePreviewWrap");
@@ -727,8 +728,21 @@ function updateDateModeUI() {
   const useCustomYear = eventUseCustomYearInput.checked;
   eventDateInput.disabled = useCustomYear;
   eventDateInput.required = !useCustomYear;
-  eventCustomYearInput.classList.toggle("hidden", !useCustomYear);
+  eventCustomYearInput.classList.toggle("is-closed", !useCustomYear);
   eventCustomYearInput.disabled = !useCustomYear;
+  const standardBlock = document.getElementById("standardDateBlock");
+  if (standardBlock) standardBlock.classList.toggle("is-closed", useCustomYear);
+}
+
+function getSelectedEra() {
+  if (eraTagChristian && eraTagChristian.checked) return "christian";
+  if (eraTagCommon && eraTagCommon.checked) return "common-era";
+  return "none";
+}
+
+function setSelectedEra(era) {
+  if (eraTagChristian) eraTagChristian.checked = (era === "christian");
+  if (eraTagCommon) eraTagCommon.checked = (era === "common-era");
 }
 
 function formatYearWithEra(year, eraTag) {
@@ -1371,7 +1385,7 @@ function resetForm() {
   eventShowMonthInput.checked = true;
   eventUseCustomYearInput.checked = false;
   eventCustomYearInput.value = "";
-  eventEraTagInput.value = "none";
+  setSelectedEra(localStorage.getItem('timeline_era_tag_v1') || "none");
   updateDateModeUI();
   eventTitleInput.value = "";
   eventTextInput.value = "";
@@ -1543,7 +1557,8 @@ eventForm.addEventListener("submit", async (event) => {
   const showDay = eventShowDayInput.checked;
   const showMonth = eventShowMonthInput.checked;
   const useCustomYear = eventUseCustomYearInput.checked;
-  const eraTag = eventEraTagInput.value;
+  const eraTag = getSelectedEra();
+  localStorage.setItem('timeline_era_tag_v1', eraTag);
   const title = eventTitleInput.value.trim();
   const text = eventTextInput.value.trim();
   const customYear = useCustomYear
@@ -1551,7 +1566,7 @@ eventForm.addEventListener("submit", async (event) => {
     : null;
 
   const hasInvalidCustomYear = useCustomYear && !Number.isInteger(customYear);
-  if ((!useCustomYear && !date) || hasInvalidCustomYear || !title || !text) {
+  if ((!useCustomYear && !date) || hasInvalidCustomYear || !title) {
     showStatus(t("fillRequiredStatus"), true);
     return;
   }
@@ -1835,11 +1850,8 @@ timelineEl.addEventListener("click", (event) => {
     eventCustomYearInput.value = Number.isInteger(eventItem.customYear)
       ? String(eventItem.customYear)
       : "";
-    eventEraTagInput.value = ["none", "christian", "common-era"].includes(
-      eventItem.eraTag,
-    )
-      ? eventItem.eraTag
-      : "none";
+    const eraFromEvent = ["none", "christian", "common-era"].includes(eventItem.eraTag) ? eventItem.eraTag : "none";
+    setSelectedEra(eraFromEvent);
     updateDateModeUI();
     eventTitleInput.value = eventItem.title;
     eventTextInput.value = eventItem.text;
@@ -1919,9 +1931,26 @@ eventImageInput.addEventListener("change", () => {
   showImagePreviewFromFile(file);
 });
 
-eventImageTrigger.addEventListener("click", () => {
-  eventImageInput.value = "";
-});
+if (eventImageDropZone) {
+  function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    eventImageDropZone.addEventListener(eventName, preventDefaults, false);
+  });
+  ['dragenter', 'dragover'].forEach(eventName => {
+    eventImageDropZone.addEventListener(eventName, () => eventImageDropZone.classList.add('dragover'), false);
+  });
+  ['dragleave', 'drop'].forEach(eventName => {
+    eventImageDropZone.addEventListener(eventName, () => eventImageDropZone.classList.remove('dragover'), false);
+  });
+  eventImageDropZone.addEventListener('drop', (e) => {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    if (files.length) {
+      eventImageInput.files = files;
+      eventImageInput.dispatchEvent(new Event('change'));
+    }
+  });
+}
 
 eventUseCustomYearInput.addEventListener("change", () => {
   updateDateModeUI();
@@ -1929,6 +1958,15 @@ eventUseCustomYearInput.addEventListener("change", () => {
     eventCustomYearInput.value = "";
   }
 });
+
+if (eraTagChristian && eraTagCommon) {
+  eraTagChristian.addEventListener("change", () => {
+    if (eraTagChristian.checked) eraTagCommon.checked = false;
+  });
+  eraTagCommon.addEventListener("change", () => {
+    if (eraTagCommon.checked) eraTagChristian.checked = false;
+  });
+}
 
 removeEventImageBtn.addEventListener("click", () => {
   eventImageInput.value = "";

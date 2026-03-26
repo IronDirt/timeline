@@ -178,4 +178,13 @@
   .online-save-panel .primary {
     align-self: auto;
   }
+
+  .modal-body-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .modal-footer-actions {
+    margin-top: 16px;
+  }
 }

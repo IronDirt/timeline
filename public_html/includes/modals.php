@@ -109,57 +109,97 @@
 			<form id="eventForm">
 				<input type="hidden" id="editIndex" value="-1">
 
-				<label data-i18n="dateLabel" for="eventDate"><?= htmlspecialchars(t('dateLabel')) ?></label>
-				<input id="eventDate" type="date" required>
-				<div class="date-visibility-options">
-					<label class="checkbox-inline" for="eventShowDay">
-						<input id="eventShowDay" type="checkbox" checked>
-						<span data-i18n="showDayText"><?= htmlspecialchars(t('showDayText')) ?></span>
-					</label>
-					<label class="checkbox-inline" for="eventShowMonth">
-						<input id="eventShowMonth" type="checkbox" checked>
-						<span data-i18n="showMonthText"><?= htmlspecialchars(t('showMonthText')) ?></span>
-					</label>
+				<div class="modal-body-grid">
+					<!-- Left Column: Fields -->
+					<div class="modal-column">
+						<div class="field-section custom-year-toggle-row">
+							<div class="ios-switch-row">
+								<label class="ios-switch">
+									<input id="eventUseCustomYear" type="checkbox">
+									<span class="slider round"></span>
+								</label>
+								<label for="eventUseCustomYear" class="ios-switch-label" style="font-size: 1.05rem;" data-i18n="useCustomYearText"><?= htmlspecialchars(t('useCustomYearText')) ?></label>
+							</div>
+							<input id="eventCustomYear" style="margin-top:10px;" class="year-input smooth-collapse is-closed" type="number" step="1" placeholder="<?= htmlspecialchars(t('customYearPlaceholder')) ?>">
+						</div>
+
+						<div class="field-section smooth-collapse" id="standardDateBlock">
+							<label data-i18n="dateLabel" for="eventDate"><?= htmlspecialchars(t('dateLabel')) ?></label>
+							<input id="eventDate" type="date" required>
+							
+							<div class="date-visibility-options">
+								<div class="ios-switch-row">
+									<label class="ios-switch">
+										<input id="eventShowDay" type="checkbox" checked>
+										<span class="slider round"></span>
+									</label>
+									<label for="eventShowDay" class="ios-switch-label" data-i18n="showDayText"><?= htmlspecialchars(t('showDayText')) ?></label>
+								</div>
+								<div class="ios-switch-row">
+									<label class="ios-switch">
+										<input id="eventShowMonth" type="checkbox" checked>
+										<span class="slider round"></span>
+									</label>
+									<label for="eventShowMonth" class="ios-switch-label" data-i18n="showMonthText"><?= htmlspecialchars(t('showMonthText')) ?></label>
+								</div>
+							</div>
+						</div>
+
+						<div class="field-section">
+							<label data-i18n="eraTagLabel"><?= htmlspecialchars(t('eraTagLabel')) ?></label>
+							<div class="date-visibility-options">
+								<div class="ios-switch-row">
+									<label class="ios-switch">
+										<input id="eraTagChristian" type="checkbox" value="christian">
+										<span class="slider round"></span>
+									</label>
+									<label for="eraTagChristian" class="ios-switch-label" data-i18n="eraChristianOption"><?= htmlspecialchars(t('eraChristianOption')) ?></label>
+								</div>
+								<div class="ios-switch-row">
+									<label class="ios-switch">
+										<input id="eraTagCommon" type="checkbox" value="common-era">
+										<span class="slider round"></span>
+									</label>
+									<label for="eraTagCommon" class="ios-switch-label" data-i18n="eraCommonEraOption"><?= htmlspecialchars(t('eraCommonEraOption')) ?></label>
+								</div>
+							</div>
+						</div>
+
+						<div class="field-section">
+							<label data-i18n="titleLabel" for="eventTitle"><?= htmlspecialchars(t('titleLabel')) ?></label>
+							<input id="eventTitle" type="text" placeholder="<?= htmlspecialchars(t('titlePlaceholder')) ?>" required>
+						</div>
+					</div>
+
+					<!-- Right Column: Text & Image -->
+					<div class="modal-column">
+						<div class="field-section flex-fill">
+							<label data-i18n="textLabel" for="eventText"><?= htmlspecialchars(t('textLabel')) ?></label>
+							<textarea id="eventText" class="tall-textarea" placeholder="<?= htmlspecialchars(t('textPlaceholder')) ?>"></textarea>
+						</div>
+
+						<div class="field-section">
+							<label data-i18n="imageLabel" for="eventImage"><?= htmlspecialchars(t('imageLabel')) ?></label>
+							<div id="eventImageDropZone" class="drop-zone">
+								<div class="drop-zone-content" id="dropZoneContent">
+									<svg class="icon drop-zone-icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5l5 5 5-5m-5 5V3"></path></svg>
+									<span data-i18n="chooseImageText" class="drop-zone-text"><?= htmlspecialchars(t('chooseImageText')) ?></span>
+									<span id="eventImageName" class="image-picker-name hidden"><?= htmlspecialchars(t('noFileSelected')) ?></span>
+									<span class="drop-zone-hint">Drag & drop o fai clic</span>
+								</div>
+								<div id="eventImagePreviewWrap" class="image-preview-wrap hidden">
+									<img id="eventImagePreview" class="image-preview" src="" alt="<?= htmlspecialchars(t('imagePreviewAlt')) ?>">
+									<button type="button" id="removeEventImageBtn" class="danger icon-only image-remove-btn" title="<?= htmlspecialchars(t('removeImageText')) ?>" aria-label="<?= htmlspecialchars(t('removeImageText')) ?>">
+										<svg class="icon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+									</button>
+								</div>
+								<input id="eventImage" class="hidden-file-input" type="file" accept="image/*">
+							</div>
+						</div>
+					</div>
 				</div>
-				<div class="date-visibility-options">
-					<label class="checkbox-inline" for="eventUseCustomYear">
-						<input id="eventUseCustomYear" type="checkbox">
-						<span data-i18n="useCustomYearText"><?= htmlspecialchars(t('useCustomYearText')) ?></span>
-					</label>
-					<input id="eventCustomYear" class="year-input hidden" type="number" step="1" placeholder="<?= htmlspecialchars(t('customYearPlaceholder')) ?>">
-				</div>
 
-				<label data-i18n="eraTagLabel" for="eventEraTag"><?= htmlspecialchars(t('eraTagLabel')) ?></label>
-				<select id="eventEraTag">
-					<option value="none" data-i18n="eraNoneOption"><?= htmlspecialchars(t('eraNoneOption')) ?></option>
-					<option value="christian" data-i18n="eraChristianOption"><?= htmlspecialchars(t('eraChristianOption')) ?></option>
-					<option value="common-era" data-i18n="eraCommonEraOption"><?= htmlspecialchars(t('eraCommonEraOption')) ?></option>
-				</select>
-
-				<label data-i18n="titleLabel" for="eventTitle"><?= htmlspecialchars(t('titleLabel')) ?></label>
-				<input id="eventTitle" type="text" placeholder="<?= htmlspecialchars(t('titlePlaceholder')) ?>" required>
-
-				<label data-i18n="textLabel" for="eventText"><?= htmlspecialchars(t('textLabel')) ?></label>
-				<textarea id="eventText" placeholder="<?= htmlspecialchars(t('textPlaceholder')) ?>" required></textarea>
-
-				<label data-i18n="imageLabel" for="eventImage"><?= htmlspecialchars(t('imageLabel')) ?></label>
-				<div class="image-picker-row">
-					<label id="eventImageTrigger" for="eventImage" class="button-like secondary image-picker-btn">
-						<svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5l5 5 5-5m-5 5V3"></path></svg>
-						<span data-i18n="chooseImageText"><?= htmlspecialchars(t('chooseImageText')) ?></span>
-					</label>
-					<button type="button" id="removeEventImageBtn" class="muted image-remove-btn hidden">
-						<svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-						<span data-i18n="removeImageText"><?= htmlspecialchars(t('removeImageText')) ?></span>
-					</button>
-					<span id="eventImageName" class="image-picker-name"><?= htmlspecialchars(t('noFileSelected')) ?></span>
-				</div>
-				<input id="eventImage" class="hidden" type="file" accept="image/*">
-				<div id="eventImagePreviewWrap" class="image-preview-wrap hidden">
-					<img id="eventImagePreview" class="image-preview" src="" alt="<?= htmlspecialchars(t('imagePreviewAlt')) ?>">
-				</div>
-
-				<div class="form-actions">
+				<div class="form-actions modal-footer-actions">
 					<button type="submit" class="primary" id="saveEventBtn">
 						<svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
 						<span id="saveEventBtnText" data-i18n="addEventText"><?= htmlspecialchars(t('addEventText')) ?></span>
