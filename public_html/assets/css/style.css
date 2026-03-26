@@ -266,9 +266,8 @@ button:hover .icon {
 }
 
 .timeline {
-  --timeline-top-padding: 54px;
+  --timeline-top-padding: 82px;
   position: relative;
-  margin-top: 12px;
   padding: var(--timeline-top-padding) 0 4px;
   display: flex;
   gap: var(--timeline-gap, 5px);
@@ -676,14 +675,14 @@ button:hover .icon {
     var(--timeline-dot-left, 20px) + (var(--timeline-dot-size, 10px) / 2)
   );
   top: calc(
-    var(--timeline-dot-top, -28px) + (var(--timeline-dot-size, 10px) / 2) - 6px
+    var(--timeline-dot-top, -28px) + (var(--timeline-dot-size, 10px) / 2) - 8px
   );
   border: none;
   background: transparent;
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
   padding: 0;
-  border-radius: 8px;
+  border-radius: 9px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -696,8 +695,8 @@ button:hover .icon {
 }
 
 .timeline-pin-btn .icon {
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
 }
 
 .pin-icon-file {
