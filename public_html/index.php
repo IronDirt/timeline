@@ -218,9 +218,10 @@ if ($timelineQueryId !== '' && preg_match('/^[a-f0-9]{12}$/', $timelineQueryId) 
 include __DIR__ . '/includes/head.php';
 ?>
 <body>
-	<div class="lang-menu-wrap">
-		<button type="button" id="langToggleBtn" class="lang-toggle-btn" aria-label="<?= htmlspecialchars(t('langToggleTitle')) ?>" title="<?= htmlspecialchars(t('langToggleTitle')) ?>"><?= htmlspecialchars(t('langToggleLabel')) ?></button>
-		<div id="langMenu" class="lang-menu hidden">
+	<div class="container">
+		<div class="lang-menu-wrap">
+			<button type="button" id="langToggleBtn" class="lang-toggle-btn" aria-label="<?= htmlspecialchars(t('langToggleTitle')) ?>" title="<?= htmlspecialchars(t('langToggleTitle')) ?>"><?= htmlspecialchars(t('langToggleLabel')) ?></button>
+			<div id="langMenu" class="lang-menu hidden">
 <?php
 	$lang_labels = [
 		'it' => 'Italiano', 'en' => 'English', 'es' => 'Español',
@@ -230,11 +231,10 @@ include __DIR__ . '/includes/head.php';
 	];
 	foreach ($allowed_langs as $al):
 ?>
-			<button type="button" class="lang-menu-btn" data-lang="<?= $al ?>"><?= $lang_labels[$al] ?? strtoupper($al) ?></button>
+				<button type="button" class="lang-menu-btn" data-lang="<?= $al ?>"><?= $lang_labels[$al] ?? strtoupper($al) ?></button>
 <?php endforeach; ?>
+			</div>
 		</div>
-	</div>
-	<div class="container">
 		<div class="top-content">
 			<h1 data-i18n="appTitle"><?= htmlspecialchars(t('appTitle')) ?></h1>
 			<div class="fab-stack top-actions">

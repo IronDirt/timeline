@@ -19,6 +19,7 @@ body.modal-open {
 }
 
 .container {
+  position: relative;
   max-width: none;
   width: 100%;
   margin: 0;
@@ -733,17 +734,18 @@ button:hover .icon {
 }
 
 .timeline-item.is-year-1 {
-  --timeline-dot-top: -40px;
+  --timeline-dot-top: -39px;
 }
 
 .timeline-item.is-year-1::before {
   background: #f2ece2;
   box-shadow: 0 0 15px 4px rgba(242, 236, 226, 0.4);
   border: 4px solid #c5a381;
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
+  box-sizing: border-box;
   top: var(--timeline-dot-top); /* Perfect alignment with the timeline line */
-  left: calc(var(--timeline-dot-left, 20px) - 10px);
+  left: calc(var(--timeline-dot-left, 20px) - 11px);
   z-index: 10;
 }
 
@@ -767,7 +769,7 @@ button:hover .icon {
 
 /* Specific centering for Year 1 virtual large dot */
 .timeline-item.is-virtual-marker.is-year-1 {
-  --timeline-dot-left: 23px; /* (64-24)/2 = 20 */
+  --timeline-dot-left: 27px; /* Matches normal virtual marker, calc(-7px) handles the rest */
 }
 
 .timeline-item.is-virtual-marker .timeline-item-content {
@@ -776,10 +778,11 @@ button:hover .icon {
 }
 
 .timeline-item.is-virtual-marker .timeline-date {
-  color: #7a6750;
+  color: #6c5943;
   font-size: 1.25rem;
   width: 100%;
   text-align: center;
+  margin-top: 12px; /* Align vertically with other dates that have padding */
 }
 
 .timeline-date {
@@ -1422,7 +1425,8 @@ body.theme-dark .timeline-item.is-year-1::before {
   box-shadow: 0 0 12px 3px rgba(212, 163, 115, 0.4);
 }
 
-body.theme-dark .timeline-date {
+body.theme-dark .timeline-date,
+body.theme-dark .timeline-item.is-virtual-marker .timeline-date {
   color: #e5e7eb;
 }
 
@@ -1697,9 +1701,8 @@ body.theme-dark .site-footer a:hover {
 }
 
 .lang-toggle-btn {
-  position: fixed;
-  top: 12px;
-  right: 16px;
+  /* position: relative; */
+  /* Remove top/right as they are on the wrap now */
   z-index: 100;
   padding: 8px 14px;
   font-size: 0.9rem;
@@ -1715,7 +1718,7 @@ body.theme-dark .site-footer a:hover {
 }
 
 .lang-menu-wrap {
-  position: fixed;
+  position: absolute;
   top: 12px;
   right: 16px;
   z-index: 100;
@@ -1787,7 +1790,7 @@ body.presentation-mode .lang-menu-wrap {
 }
 
 .lang-select {
-  position: fixed;
+  position: absolute;
   top: 12px;
   right: 70px;
   z-index: 100;
