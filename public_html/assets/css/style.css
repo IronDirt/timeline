@@ -1403,11 +1403,10 @@ body.presentation-mode .timeline-pin-btn {
 
 body.presentation-mode .timeline-header {
   padding-top: 18px;
-  padding-bottom: 12px;
 }
 
 body.presentation-mode .timeline-zoom-controls {
-  margin-right: 12px;
+  margin-right: 32px;
 }
 
 body.presentation-mode .timeline-section {
@@ -1522,16 +1521,17 @@ body.theme-dark .site-footer a:hover {
   top: 12px;
   right: 16px;
   z-index: 100;
-  padding: 5px 10px;
-  font-size: 0.78rem;
+  padding: 8px 14px;
+  font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.06em;
-  border-radius: 6px;
+  border-radius: 10px;
   background: #d4ccc0;
   color: #4b4338;
   border: none;
   cursor: pointer;
   line-height: 1;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 .lang-menu-wrap {
@@ -1546,9 +1546,9 @@ body.theme-dark .site-footer a:hover {
   flex-direction: column;
   gap: 4px;
   position: absolute;
-  top: 38px;
+  top: 48px;
   right: 0;
-  min-width: 110px;
+  min-width: 130px;
   background: #d4ccc0;
   border-radius: 8px;
   border: 1px solid #c8c1b5;
@@ -1570,9 +1570,9 @@ body.theme-dark .site-footer a:hover {
   background: none;
   border: none;
   color: #4b4338;
-  font-size: 0.78rem;
+  font-size: 0.88rem;
   font-weight: 700;
-  padding: 6px 18px;
+  padding: 8px 20px;
   text-align: left;
   cursor: pointer;
   border-radius: 6px;
@@ -1611,10 +1611,10 @@ body.presentation-mode .lang-menu-wrap {
   top: 12px;
   right: 70px;
   z-index: 100;
-  padding: 5px 10px;
-  font-size: 0.78rem;
+  padding: 8px 14px;
+  font-size: 0.9rem;
   font-weight: 700;
-  border-radius: 6px;
+  border-radius: 10px;
   background: #d4ccc0;
   color: #4b4338;
   border: 1px solid #c8c1b5;
@@ -1650,5 +1650,5 @@ body.presentation-mode:not(.viewer-mode) .site-footer {
 }
 
 body.viewer-mode .timeline-zoom-controls {
-  margin-right: 12px;
+  margin-right: 32px;
 }
