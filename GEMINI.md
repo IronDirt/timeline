@@ -18,10 +18,10 @@ Operi su un'architettura a 3 livelli per siti performanti, multilingua e pronti 
 - **PWA (App Mobile/PC)**: Inserimento obbligatorio di `manifest.json` e un `service-worker.js` minimale per rendere il sito installabile.
 
 ### Livello 3: Esecuzione (Asset & Media)
-- **Separazione CSS**: Caricamento condizionale per ottimizzare il rendering:
+- **Separazione CSS & Cache Busting**: Caricamento condizionale con versione dinamica per forzare il ricaricamento ad ogni modifica:
   ```html
-  <link rel="stylesheet" href="assets/css/desktop.css" media="screen and (min-width: 769px)">
-  <link rel="stylesheet" href="assets/css/mobile.css" media="screen and (max-width: 768px)">
+  <link rel="stylesheet" href="assets/css/desktop.css?v=<?php echo filemtime('assets/css/desktop.css'); ?>" media="screen and (min-width: 769px)">
+  <link rel="stylesheet" href="assets/css/mobile.css?v=<?php echo filemtime('assets/css/mobile.css'); ?>" media="(max-width: 768px)">
   ```
 - **Trasparenza Asset**: Obbligo di formato **WebP** o **PNG-24** per icone e loghi, garantendo il canale alpha (sfondo trasparente) per adattarsi a entrambi i temi (Dark/Light).
 
@@ -60,7 +60,7 @@ Per rendere il sito scaricabile come App, includi sempre:
 ### Copyright & Footer (Footer.php)
 ```php
 <footer>
-    <p>&copy; <?php echo date("Y"); ?> Nome Brand. Tutti i diritti riservati.</p>
+    <span>Copyright &copy; <?php echo date('Y'); ?> <a href="https://salernohub.net" target="_blank" rel="noopener" class="footer-contact">SalernoHUB</a> | <a href="mailto:salernohub@gmail.com" class="footer-contact">Contatti</a></span>
 </footer>
 ```
 
