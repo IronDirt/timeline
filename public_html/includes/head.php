@@ -138,9 +138,9 @@
 		]
 	}
 	</script>
-	<link rel="stylesheet" href="assets/css/style.css">
-	<link rel="stylesheet" href="assets/css/style-mobile.css" media="(max-width: 900px)">
-	<link rel="stylesheet" href="assets/css/style-desktop.css" media="(min-width: 901px)">
+	<link rel="stylesheet" href="assets/css/style.css?v=<?= filemtime('assets/css/style.css'); ?>">
+	<link rel="stylesheet" href="assets/css/style-mobile.css?v=<?= filemtime('assets/css/style-mobile.css'); ?>" media="(max-width: 900px)">
+	<link rel="stylesheet" href="assets/css/style-desktop.css?v=<?= filemtime('assets/css/style-desktop.css'); ?>" media="(min-width: 901px)">
 	<!-- PWA: Manifest -->
 	<link rel="manifest" href="manifest.json">
 </head>
