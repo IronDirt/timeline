@@ -777,14 +777,14 @@ button:hover .icon {
 
 .timeline-item.is-virtual-marker .timeline-date {
   color: #7a6750;
-  font-size: 1rem;
+  font-size: 1.25rem;
   width: 100%;
   text-align: center;
 }
 
 .timeline-date {
   color: #6c5943;
-  font-size: 0.85rem;
+  font-size: 1.15rem;
   font-weight: 700;
 }
 
@@ -879,6 +879,7 @@ button:hover .icon {
   border-radius: 8px;
   border: none;
   object-fit: contain;
+  object-position: left top;
   align-self: flex-start;
 }
 
