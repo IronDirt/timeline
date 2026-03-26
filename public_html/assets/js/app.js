@@ -351,6 +351,11 @@ const localResetCopyAdminLinkBtn = document.getElementById(
 const localResetDeleteOnlineBtn = document.getElementById(
   "localResetDeleteOnlineBtn",
 );
+const deleteConfirmModal = document.getElementById("deleteConfirmModal");
+const deleteConfirmBackdrop = document.getElementById("deleteConfirmBackdrop");
+const closeDeleteConfirmBtn = document.getElementById("closeDeleteConfirmBtn");
+const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
 const START_WITH_EMPTY_TIMELINE =
   new URLSearchParams(window.location.search).get("new") === "1";
 
@@ -362,6 +367,7 @@ let removeImageOnSave = false;
 let sharedTimelineId = null;
 let sharedAdminToken = null;
 let localResetModalCloseTimerId = 0;
+let pendingDeleteIndex = -1;
 
 function hideImagePreview() {
   if (imagePreviewObjectUrl) {
@@ -1425,6 +1431,19 @@ function closeLocalResetModal() {
   document.body.classList.remove("modal-open");
 }
 
+function openDeleteConfirmModal(index) {
+  pendingDeleteIndex = index;
+  deleteConfirmModal.classList.remove("hidden");
+  document.body.classList.add("modal-open");
+  confirmDeleteBtn.focus();
+}
+
+function closeDeleteConfirmModal() {
+  deleteConfirmModal.classList.add("hidden");
+  document.body.classList.remove("modal-open");
+  pendingDeleteIndex = -1;
+}
+
 function toggleBackupMenu() {
   backupMenu.classList.toggle("hidden");
 }
@@ -1728,6 +1747,21 @@ window.addEventListener("resize", updateTimelineLineWidth);
 closeModalBtn.addEventListener("click", closeModal);
 modalBackdrop.addEventListener("click", closeModal);
 
+closeDeleteConfirmBtn.addEventListener("click", closeDeleteConfirmModal);
+deleteConfirmBackdrop.addEventListener("click", closeDeleteConfirmModal);
+cancelDeleteBtn.addEventListener("click", closeDeleteConfirmModal);
+
+confirmDeleteBtn.addEventListener("click", () => {
+  if (pendingDeleteIndex >= 0) {
+    timelineData.splice(pendingDeleteIndex, 1);
+    saveToLocal();
+    renderTimeline();
+    resetForm();
+    showStatus(t("eventDeletedStatus"));
+    closeDeleteConfirmModal();
+  }
+});
+
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && !eventModal.classList.contains("hidden")) {
     closeModal();
@@ -1735,6 +1769,10 @@ document.addEventListener("keydown", (event) => {
 
   if (event.key === "Escape" && !localResetModal.classList.contains("hidden")) {
     closeLocalResetModal();
+  }
+
+  if (event.key === "Escape" && !deleteConfirmModal.classList.contains("hidden")) {
+    closeDeleteConfirmModal();
   }
 
   if (event.key === "Escape") {
@@ -1825,11 +1863,7 @@ timelineEl.addEventListener("click", (event) => {
   }
 
   if (action === "delete") {
-    timelineData.splice(index, 1);
-    saveToLocal();
-    renderTimeline();
-    resetForm();
-    showStatus(t("eventDeletedStatus"));
+    openDeleteConfirmModal(index);
   }
 });
 

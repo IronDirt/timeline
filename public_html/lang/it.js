@@ -103,4 +103,8 @@ window.__i18n_it = {
   eraCE: "E.V.",
   langToggleLabel: "IT",
   langToggleTitle: "Passa all'italiano",
+  deleteConfirmTitle: "Conferma eliminazione",
+  deleteConfirmText: "Sei sicuro di voler eliminare questo evento?",
+  deleteConfirmCancel: "Annulla",
+  deleteConfirmBtn: "Elimina",
 };

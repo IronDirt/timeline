@@ -7,7 +7,17 @@
  */
 ?>
 	<footer class="site-footer">
-		<p>&copy; <?php echo date('Y'); ?> <a href="https://timeline.salernohub.net" rel="noopener">timeline.salernohub.net</a></p>
+		<div class="footer-container">
+			<div class="footer-item footer-left">
+				<span>Powered by <a href="https://salernohub.net/?lang=it" target="_blank" rel="noopener">salernohub.net</a></span>
+			</div>
+			<div class="footer-item footer-center">
+				<span>&copy; <?php echo date('Y'); ?> <a href="https://timeline.salernohub.net" rel="noopener">timeline.salernohub.net</a></span>
+			</div>
+			<div class="footer-item footer-right">
+				<a href="mailto:salerno.loris97@gmail.com" class="footer-contact">Contatti</a>
+			</div>
+		</div>
 	</footer>
 
 	</div>

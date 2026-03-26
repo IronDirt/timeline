@@ -168,3 +168,24 @@
 			</form>
 		</section>
 	</div>
+<div class="modal hidden" id="deleteConfirmModal" role="dialog" aria-modal="true" aria-labelledby="deleteConfirmTitle">
+		<div class="modal-backdrop" id="deleteConfirmBackdrop"></div>
+		<section class="modal-card delete-confirm-card">
+			<div class="modal-header">
+				<h2 id="deleteConfirmTitle" data-i18n="deleteConfirmTitle"><?= htmlspecialchars(t('deleteConfirmTitle')) ?></h2>
+				<button type="button" class="muted close-btn" id="closeDeleteConfirmBtn" aria-label="<?= htmlspecialchars(t('closeLabel')) ?>">
+					<svg class="icon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+				</button>
+			</div>
+			<p class="local-reset-text" data-i18n="deleteConfirmText"><?= htmlspecialchars(t('deleteConfirmText')) ?></p>
+			<div class="form-actions delete-confirm-actions">
+				<button type="button" class="secondary" id="cancelDeleteBtn">
+					<span data-i18n="deleteConfirmCancel"><?= htmlspecialchars(t('deleteConfirmCancel')) ?></span>
+				</button>
+				<button type="button" class="danger" id="confirmDeleteBtn">
+					<svg class="icon" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v3M4 7h16"></path></svg>
+					<span data-i18n="deleteConfirmBtn"><?= htmlspecialchars(t('deleteConfirmBtn')) ?></span>
+				</button>
+			</div>
+		</section>
+	</div>

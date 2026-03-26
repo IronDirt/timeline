@@ -118,4 +118,8 @@ return [
     'eraCE'                       => 'CE',
     'langToggleLabel'             => 'EN',
     'langToggleTitle'             => 'Switch to English',
+    'deleteConfirmTitle'          => 'Confirm deletion',
+    'deleteConfirmText'           => 'Are you sure you want to delete this event?',
+    'deleteConfirmCancel'         => 'Cancel',
+    'deleteConfirmBtn'            => 'Delete',
 ];

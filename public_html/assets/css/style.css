@@ -1056,6 +1056,15 @@ button:hover .icon {
   width: min(640px, 100%);
 }
 
+.delete-confirm-card {
+  width: min(440px, 100%);
+}
+
+.delete-confirm-actions {
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+
 .local-reset-text {
   margin: 0 0 10px;
   color: #4d473f;
@@ -1432,29 +1441,80 @@ body.presentation-mode .timeline-text {
 }
 
 .site-footer {
-  text-align: center;
-  padding: 18px 16px 24px;
+  padding: 24px 16px 32px;
   margin-top: auto;
+  border-top: 1px solid rgba(158, 147, 134, 0.1);
 }
 
-.site-footer p {
-  margin: 0;
-  font-size: 0.8rem;
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  gap: 10px;
+}
+
+.footer-item {
+  flex: 1;
+}
+
+.footer-left {
+  text-align: left;
+}
+
+.footer-center {
+  text-align: center;
+}
+
+.footer-right {
+  text-align: right;
+}
+
+.site-footer span, 
+.site-footer a {
+  font-size: 0.82rem;
   color: #9e9386;
+  text-decoration: none;
+  transition: color 180ms ease;
+  white-space: nowrap;
 }
 
 .site-footer a {
   color: #9e9386;
-  text-decoration: none;
 }
 
 .site-footer a:hover {
+  color: #5a4d3f;
   text-decoration: underline;
 }
 
-body.theme-dark .site-footer p,
+.footer-contact {
+  font-weight: 600;
+}
+
+body.theme-dark .site-footer {
+  border-top-color: rgba(75, 85, 99, 0.1);
+}
+
+body.theme-dark .site-footer span,
 body.theme-dark .site-footer a {
   color: #4b5563;
+}
+
+body.theme-dark .site-footer a:hover {
+  color: #94a3b8;
+}
+
+@media (max-width: 800px) {
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+  .footer-item {
+    text-align: center;
+  }
 }
 
 .lang-toggle-btn {
