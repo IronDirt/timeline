@@ -59,14 +59,7 @@
 		})();
 	</script>
 	<meta name="referrer" content="strict-origin-when-cross-origin">
-		<!-- Google tag (gtag.js) -->
-		<script async src="https://www.googletagmanager.com/gtag/js?id=G-R2QSCDWV2Q"></script>
-		<script>
-			window.dataLayer = window.dataLayer || [];
-			function gtag(){dataLayer.push(arguments);}
-			gtag('js', new Date());
-			gtag('config', 'G-R2QSCDWV2Q');
-		</script>
+		<script defer src="https://analytics.salernohub.net/script.js" data-website-id="1f14c9f6-0bbd-43e5-b917-115428e581ce"></script>
 	<script type="application/ld+json">
 	{
 		"@context": "https://schema.org",
