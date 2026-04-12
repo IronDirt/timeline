@@ -5,6 +5,9 @@
  * Variabili attese da config.php:
  *   $lang_code, $lang, $allowed_langs, $current_locale
  */
+$isParametric = (isset($_GET['timeline']) && $_GET['timeline'] !== '') || (isset($_GET['api']) && $_GET['api'] !== '') || isset($_GET['new']);
+$robotsContent = $isParametric ? "noindex, nofollow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
+$bingbotContent = $isParametric ? "noindex, nofollow" : "index, follow";
 ?>
 <!DOCTYPE html>
 <html lang="<?= htmlspecialchars($lang_code) ?>">
@@ -15,9 +18,9 @@
 	<meta name="description" content="<?= htmlspecialchars(t('page_description')) ?>">
 	<meta name="keywords" content="<?= htmlspecialchars($lang['page_keywords'] ?? '') ?>">
 	<meta name="author" content="SalernoHub">
-	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-	<meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-	<meta name="bingbot" content="index, follow">
+	<meta name="robots" content="<?= $robotsContent ?>">
+	<meta name="googlebot" content="<?= $robotsContent ?>">
+	<meta name="bingbot" content="<?= $bingbotContent ?>">
 	<link rel="canonical" href="https://timeline.salernohub.net/<?= $lang_code !== 'it' ? '?lang=' . $lang_code : '' ?>">
 <?php foreach ($allowed_langs as $al): ?>
 	<link rel="alternate" href="https://timeline.salernohub.net/<?= $al !== 'it' ? '?lang=' . $al : '' ?>" hreflang="<?= htmlspecialchars($al) ?>">
@@ -25,6 +28,11 @@
 	<link rel="alternate" href="https://timeline.salernohub.net/" hreflang="x-default">
 	<meta property="og:type" content="website">
 	<meta property="og:locale" content="<?= htmlspecialchars($current_locale) ?>">
+<?php foreach ($allowed_langs as $al): if ($al !== $lang_code):
+	$localesMap = ['it'=>'it_IT','en'=>'en_US','es'=>'es_ES','de'=>'de_DE','fr'=>'fr_FR','pt'=>'pt_PT','ru'=>'ru_RU','tr'=>'tr_TR','ja'=>'ja_JP','zh'=>'zh_CN'];
+?>
+	<meta property="og:locale:alternate" content="<?= htmlspecialchars($localesMap[$al] ?? $al) ?>">
+<?php endif; endforeach; ?>
 	<meta property="og:site_name" content="Timeline SalernoHub">
 	<meta property="og:title" content="<?= htmlspecialchars(t('og_title')) ?>">
 	<meta property="og:description" content="<?= htmlspecialchars(t('og_description')) ?>">
@@ -39,6 +47,7 @@
 	<meta name="twitter:title" content="<?= htmlspecialchars(t('og_title')) ?>">
 	<meta name="twitter:description" content="<?= htmlspecialchars(t('twitter_description')) ?>">
 	<meta name="twitter:image" content="https://timeline.salernohub.net/assets/img/og-image.svg">
+	<meta name="twitter:image:alt" content="<?= htmlspecialchars(t('og_title')) ?>">
 	<meta name="application-name" content="Timeline SalernoHub">
 	<meta name="theme-color" content="#e9e5de" id="meta-theme-color">
 	<meta name="mobile-web-app-capable" content="yes">
@@ -78,12 +87,16 @@
 	<script type="application/ld+json">
 	{
 		"@context": "https://schema.org",
-		"@type": "SoftwareApplication",
+		"@type": "WebApplication",
 		"name": "Timeline SalernoHub",
 		"applicationCategory": "EducationalApplication",
 		"operatingSystem": "Web",
 		"url": "https://timeline.salernohub.net/",
 		"inLanguage": "<?= htmlspecialchars($current_locale) ?>",
+		"audience": {
+			"@type": "PeopleAudience",
+			"audienceType": "Students, Teachers, Professionals, Individuals"
+		},
 		"offers": {
 			"@type": "Offer",
 			"price": "0",

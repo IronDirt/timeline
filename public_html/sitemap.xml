@@ -1,63 +1,179 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://timeline.salernohub.net/</loc>
-    <lastmod>2026-03-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://timeline.salernohub.net/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://timeline.salernohub.net/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://timeline.salernohub.net/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://timeline.salernohub.net/?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timeline.salernohub.net/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://timeline.salernohub.net/?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timeline.salernohub.net/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://timeline.salernohub.net/?lang=tr"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timeline.salernohub.net/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://timeline.salernohub.net/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timeline.salernohub.net/"/>
+    <lastmod>2026-04-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://timeline.salernohub.net/?lang=en</loc>
-    <lastmod>2026-03-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://timeline.salernohub.net/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://timeline.salernohub.net/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://timeline.salernohub.net/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://timeline.salernohub.net/?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timeline.salernohub.net/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://timeline.salernohub.net/?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timeline.salernohub.net/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://timeline.salernohub.net/?lang=tr"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timeline.salernohub.net/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://timeline.salernohub.net/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timeline.salernohub.net/"/>
+    <lastmod>2026-04-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://timeline.salernohub.net/?lang=es</loc>
-    <lastmod>2026-03-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://timeline.salernohub.net/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://timeline.salernohub.net/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://timeline.salernohub.net/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://timeline.salernohub.net/?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timeline.salernohub.net/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://timeline.salernohub.net/?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timeline.salernohub.net/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://timeline.salernohub.net/?lang=tr"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timeline.salernohub.net/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://timeline.salernohub.net/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timeline.salernohub.net/"/>
+    <lastmod>2026-04-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://timeline.salernohub.net/?lang=de</loc>
-    <lastmod>2026-03-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://timeline.salernohub.net/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://timeline.salernohub.net/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://timeline.salernohub.net/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://timeline.salernohub.net/?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timeline.salernohub.net/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://timeline.salernohub.net/?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timeline.salernohub.net/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://timeline.salernohub.net/?lang=tr"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timeline.salernohub.net/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://timeline.salernohub.net/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timeline.salernohub.net/"/>
+    <lastmod>2026-04-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://timeline.salernohub.net/?lang=fr</loc>
-    <lastmod>2026-03-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://timeline.salernohub.net/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://timeline.salernohub.net/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://timeline.salernohub.net/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://timeline.salernohub.net/?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timeline.salernohub.net/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://timeline.salernohub.net/?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timeline.salernohub.net/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://timeline.salernohub.net/?lang=tr"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timeline.salernohub.net/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://timeline.salernohub.net/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timeline.salernohub.net/"/>
+    <lastmod>2026-04-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://timeline.salernohub.net/?lang=pt</loc>
-    <lastmod>2026-03-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://timeline.salernohub.net/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://timeline.salernohub.net/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://timeline.salernohub.net/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://timeline.salernohub.net/?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timeline.salernohub.net/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://timeline.salernohub.net/?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timeline.salernohub.net/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://timeline.salernohub.net/?lang=tr"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timeline.salernohub.net/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://timeline.salernohub.net/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timeline.salernohub.net/"/>
+    <lastmod>2026-04-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://timeline.salernohub.net/?lang=ru</loc>
-    <lastmod>2026-03-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://timeline.salernohub.net/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://timeline.salernohub.net/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://timeline.salernohub.net/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://timeline.salernohub.net/?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timeline.salernohub.net/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://timeline.salernohub.net/?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timeline.salernohub.net/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://timeline.salernohub.net/?lang=tr"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timeline.salernohub.net/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://timeline.salernohub.net/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timeline.salernohub.net/"/>
+    <lastmod>2026-04-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://timeline.salernohub.net/?lang=tr</loc>
-    <lastmod>2026-03-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://timeline.salernohub.net/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://timeline.salernohub.net/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://timeline.salernohub.net/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://timeline.salernohub.net/?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timeline.salernohub.net/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://timeline.salernohub.net/?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timeline.salernohub.net/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://timeline.salernohub.net/?lang=tr"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timeline.salernohub.net/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://timeline.salernohub.net/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timeline.salernohub.net/"/>
+    <lastmod>2026-04-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://timeline.salernohub.net/?lang=ja</loc>
-    <lastmod>2026-03-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://timeline.salernohub.net/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://timeline.salernohub.net/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://timeline.salernohub.net/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://timeline.salernohub.net/?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timeline.salernohub.net/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://timeline.salernohub.net/?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timeline.salernohub.net/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://timeline.salernohub.net/?lang=tr"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timeline.salernohub.net/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://timeline.salernohub.net/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timeline.salernohub.net/"/>
+    <lastmod>2026-04-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://timeline.salernohub.net/?lang=zh</loc>
-    <lastmod>2026-03-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://timeline.salernohub.net/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://timeline.salernohub.net/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://timeline.salernohub.net/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://timeline.salernohub.net/?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timeline.salernohub.net/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://timeline.salernohub.net/?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timeline.salernohub.net/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://timeline.salernohub.net/?lang=tr"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timeline.salernohub.net/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://timeline.salernohub.net/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timeline.salernohub.net/"/>
+    <lastmod>2026-04-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://timeline.salernohub.net/terms.php</loc>
+    <lastmod>2026-04-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
   </url>
 </urlset>

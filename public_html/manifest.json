@@ -1,12 +1,12 @@
 {
-  "name": "Timeline",
+  "name": "Timeline SalernoHub",
   "id": "timeline",
   "short_name": "Timeline",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#e9e5de",
   "theme_color": "#e9e5de",
-  "description": "View and share interactive timelines.",
+  "description": "Crea una linea temporale personalizzata con Timeline SalernoHub.",
   "orientation": "any",
   "icons": [
     {

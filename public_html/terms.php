@@ -10,7 +10,7 @@ require __DIR__ . '/includes/config.php';
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 	<title><?= htmlspecialchars(t('terms_title') ?? 'Termini e Condizioni') ?> - Timeline SalernoHub</title>
 	<meta name="description" content="<?= htmlspecialchars(t('terms_title') ?? 'Termini e Condizioni') ?>">
-	<meta name="robots" content="noindex, follow">
+	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#ffffff">
 	<link rel="stylesheet" href="assets/css/style-landing.css?v=<?= @filemtime('assets/css/style-landing.css') ?: time(); ?>">
 	<link rel="manifest" href="manifest.json">

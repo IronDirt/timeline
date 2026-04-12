@@ -666,8 +666,8 @@
 
 /* ═══ FOOTER ═══ */
 .lp-footer {
-  background: var(--lp-gray-900);
-  color: var(--lp-gray-400);
+  background: #2a1f0e;
+  color: #a89070;
 }
 
 .lp-footer-bottom {
@@ -679,12 +679,12 @@
   justify-content: center;
   gap: 8px;
   font-size: 0.82rem;
-  color: var(--lp-gray-500);
+  color: #7a6040;
   flex-wrap: wrap;
 }
 
 .lp-footer-bottom a {
-  color: var(--lp-gray-400);
+  color: #a89070;
   text-decoration: none;
   transition: color var(--lp-transition);
 }
@@ -694,7 +694,7 @@
 }
 
 .lp-footer-sep {
-  color: var(--lp-gray-600);
+  color: #5a4030;
 }
 
 /* ═══ SCROLL REVEAL ═══ */
@@ -817,4 +817,16 @@
   .lp-example {
     transition: none !important;
   }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }

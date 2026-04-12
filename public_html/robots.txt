@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
+Disallow: /includes/
+Disallow: /lang/
+Disallow: /*?api=
+Disallow: /*?timeline=
 
 Sitemap: https://timeline.salernohub.net/sitemap.xml
