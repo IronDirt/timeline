@@ -4,15 +4,18 @@ const ICONS = {
   plus: '<svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
   minus: '<svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14"/></svg>',
   edit: '<svg class="icon" viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>',
-  trash: '<svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m-6 5v6m4-6v6"></path></svg>',
+  trash:
+    '<svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m-6 5v6m4-6v6"></path></svg>',
   pin: '<span class="icon pin-icon-file"></span>',
-  pinSimple: '<svg class="icon" viewBox="0 0 24 24"><path d="M12 17v5M9 10.76a2 2 0 0 1-1.6-1.93 2 2 0 0 1 1.4-1.9L12 3l3.2 3.93a2 2 0 0 1 1.4 1.9 2 2 0 0 1-1.6 1.93l-3 4.24z"></path></svg>',
-  check: '<svg class="icon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg>',
-  x: '<svg class="icon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"></path></svg>'
+  pinSimple:
+    '<svg class="icon" viewBox="0 0 24 24"><path d="M12 17v5M9 10.76a2 2 0 0 1-1.6-1.93 2 2 0 0 1 1.4-1.9L12 3l3.2 3.93a2 2 0 0 1 1.4 1.9 2 2 0 0 1-1.6 1.93l-3 4.24z"></path></svg>',
+  check:
+    '<svg class="icon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg>',
+  x: '<svg class="icon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"></path></svg>',
 };
 
 function getIcon(name) {
-  return ICONS[name] || '';
+  return ICONS[name] || "";
 }
 
 function detectLang() {
@@ -30,7 +33,10 @@ function detectLang() {
   };
 
   // Se PHP ha passato la lingua tramite INITIAL_LANG, usala e sincronizza localStorage
-  if (typeof INITIAL_LANG !== "undefined" && Object.values(langMap).includes(INITIAL_LANG)) {
+  if (
+    typeof INITIAL_LANG !== "undefined" &&
+    Object.values(langMap).includes(INITIAL_LANG)
+  ) {
     localStorage.setItem(LANG_KEY, INITIAL_LANG);
     return INITIAL_LANG;
   }
@@ -148,7 +154,9 @@ function applyTranslations() {
     Number.parseInt(document.getElementById("editIndex")?.value, 10) >= 0;
   const saveBtnTextEl = document.getElementById("saveEventBtnText");
   if (saveBtnTextEl) {
-    saveBtnTextEl.textContent = t(isEditing ? "updateEventText" : "addEventText");
+    saveBtnTextEl.textContent = t(
+      isEditing ? "updateEventText" : "addEventText",
+    );
   }
   set(
     "modalTitle",
@@ -533,7 +541,7 @@ function applyTheme(theme) {
   currentTheme = theme === "dark" ? "dark" : "light";
   document.body.classList.toggle("theme-dark", currentTheme === "dark");
   const isDark = currentTheme === "dark";
-  
+
   // Update theme-color meta tag
   const themeColorMeta = document.querySelector('meta[name="theme-color"]');
   if (themeColorMeta) {
@@ -741,8 +749,8 @@ function getSelectedEra() {
 }
 
 function setSelectedEra(era) {
-  if (eraTagChristian) eraTagChristian.checked = (era === "christian");
-  if (eraTagCommon) eraTagCommon.checked = (era === "common-era");
+  if (eraTagChristian) eraTagChristian.checked = era === "christian";
+  if (eraTagCommon) eraTagCommon.checked = era === "common-era";
 }
 
 function formatYearWithEra(year, eraTag) {
@@ -879,7 +887,7 @@ function renderTimeline() {
 
     const item = document.createElement("article");
     item.className = "timeline-item";
-    
+
     const hasCustomYear =
       eventItem.useCustomYear && Number.isInteger(eventItem.customYear);
     const formattedDate = hasCustomYear
@@ -1385,7 +1393,7 @@ function resetForm() {
   eventShowMonthInput.checked = true;
   eventUseCustomYearInput.checked = false;
   eventCustomYearInput.value = "";
-  setSelectedEra(localStorage.getItem('timeline_era_tag_v1') || "none");
+  setSelectedEra(localStorage.getItem("timeline_era_tag_v1") || "none");
   updateDateModeUI();
   eventTitleInput.value = "";
   eventTextInput.value = "";
@@ -1558,7 +1566,7 @@ eventForm.addEventListener("submit", async (event) => {
   const showMonth = eventShowMonthInput.checked;
   const useCustomYear = eventUseCustomYearInput.checked;
   const eraTag = getSelectedEra();
-  localStorage.setItem('timeline_era_tag_v1', eraTag);
+  localStorage.setItem("timeline_era_tag_v1", eraTag);
   const title = eventTitleInput.value.trim();
   const text = eventTextInput.value.trim();
   const customYear = useCustomYear
@@ -1786,7 +1794,10 @@ document.addEventListener("keydown", (event) => {
     closeLocalResetModal();
   }
 
-  if (event.key === "Escape" && !deleteConfirmModal.classList.contains("hidden")) {
+  if (
+    event.key === "Escape" &&
+    !deleteConfirmModal.classList.contains("hidden")
+  ) {
     closeDeleteConfirmModal();
   }
 
@@ -1850,7 +1861,11 @@ timelineEl.addEventListener("click", (event) => {
     eventCustomYearInput.value = Number.isInteger(eventItem.customYear)
       ? String(eventItem.customYear)
       : "";
-    const eraFromEvent = ["none", "christian", "common-era"].includes(eventItem.eraTag) ? eventItem.eraTag : "none";
+    const eraFromEvent = ["none", "christian", "common-era"].includes(
+      eventItem.eraTag,
+    )
+      ? eventItem.eraTag
+      : "none";
     setSelectedEra(eraFromEvent);
     updateDateModeUI();
     eventTitleInput.value = eventItem.title;
@@ -1932,22 +1947,33 @@ eventImageInput.addEventListener("change", () => {
 });
 
 if (eventImageDropZone) {
-  function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
-  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+  function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
     eventImageDropZone.addEventListener(eventName, preventDefaults, false);
   });
-  ['dragenter', 'dragover'].forEach(eventName => {
-    eventImageDropZone.addEventListener(eventName, () => eventImageDropZone.classList.add('dragover'), false);
+  ["dragenter", "dragover"].forEach((eventName) => {
+    eventImageDropZone.addEventListener(
+      eventName,
+      () => eventImageDropZone.classList.add("dragover"),
+      false,
+    );
   });
-  ['dragleave', 'drop'].forEach(eventName => {
-    eventImageDropZone.addEventListener(eventName, () => eventImageDropZone.classList.remove('dragover'), false);
+  ["dragleave", "drop"].forEach((eventName) => {
+    eventImageDropZone.addEventListener(
+      eventName,
+      () => eventImageDropZone.classList.remove("dragover"),
+      false,
+    );
   });
-  eventImageDropZone.addEventListener('drop', (e) => {
+  eventImageDropZone.addEventListener("drop", (e) => {
     const dt = e.dataTransfer;
     const files = dt.files;
     if (files.length) {
       eventImageInput.files = files;
-      eventImageInput.dispatchEvent(new Event('change'));
+      eventImageInput.dispatchEvent(new Event("change"));
     }
   });
 }
@@ -1993,6 +2019,6 @@ removeEventImageBtn.addEventListener("click", () => {
   await loadFromLocal();
   renderTimeline();
   updateTimelineLineWidth();
+
   showStatus(t("readyStatus"));
 })();
-

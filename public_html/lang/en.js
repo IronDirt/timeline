@@ -107,4 +107,7 @@ window.__i18n_en = {
   deleteConfirmText: "Are you sure you want to delete this event?",
   deleteConfirmCancel: "Cancel",
   deleteConfirmBtn: "Delete",
+  landingSubtitle: "Create beautiful custom timelines online for study, work, and events. Completely free.",
+  landingCreateBtn: "Create new timeline",
+  landingContinueBtn: "Continue your timeline",
 };

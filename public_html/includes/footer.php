@@ -36,7 +36,7 @@
 		<script>
 			if ('serviceWorker' in navigator) {
 				window.addEventListener('load', function() {
-					navigator.serviceWorker.register('assets/js/service-worker.js')
+					navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
 						.then(function(registration) {
 							// Registrazione riuscita
 						}, function(err) {

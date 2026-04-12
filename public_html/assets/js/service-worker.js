@@ -1,11 +1,13 @@
 // service-worker.js
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open("linea-temporale-v2").then((cache) => {
+    caches.open("linea-temporale-v3").then((cache) => {
       return cache.addAll([
         "/",
         "/index.php",
+        "/editor.php",
         "/assets/css/style.css",
+        "/assets/css/style-landing.css",
         "/assets/css/style-mobile.css",
         "/assets/css/style-desktop.css",
         "/assets/js/app.js",

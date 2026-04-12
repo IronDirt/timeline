@@ -1,361 +1,451 @@
 <?php
 declare(strict_types=1);
 
-// ── Livello 2: Orchestrazione ──────────────────────────────────────
-// Carica configurazione lingua e funzioni di supporto
 require __DIR__ . '/includes/config.php';
 
-// ── Inizializza directory storage ──────────────────────────────────
-$storageDir = timeline_storage_dir();
-if (!is_dir($storageDir)) {
-	if (!@mkdir($storageDir, 0775, true)) {
-		// Non blocchiamo subito, ma l'API darà errore se cercherà di scrivere
-	}
+// ── Redirect: se arrivano parametri timeline/api, manda a editor.php ──
+$hasTimeline = isset($_GET['timeline']) && $_GET['timeline'] !== '';
+$hasApi      = isset($_GET['api']) && $_GET['api'] !== '';
+$hasNew      = isset($_GET['new']);
+
+if ($hasTimeline || $hasApi || $hasNew) {
+	$qs = $_SERVER['QUERY_STRING'] ?? '';
+	header('Location: editor.php' . ($qs !== '' ? '?' . $qs : ''), true, 302);
+	exit;
 }
-
-
-// ════════════════════════════════════════════════════════════════════
-// API: Eliminazione timeline online
-// ════════════════════════════════════════════════════════════════════
-if (($_GET['api'] ?? '') === 'delete' && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
-	header('Content-Type: application/json; charset=utf-8');
-
-	try {
-		$rawBody = file_get_contents('php://input');
-		$payload = json_decode($rawBody ?: '{}', true, 512, JSON_THROW_ON_ERROR);
-
-		$timelineId = isset($payload['timelineId']) && is_string($payload['timelineId'])
-			? trim($payload['timelineId'])
-			: '';
-		$adminToken = isset($payload['adminToken']) && is_string($payload['adminToken'])
-			? trim($payload['adminToken'])
-			: '';
-
-		if ($timelineId === '' || preg_match('/^[a-f0-9]{12}$/', $timelineId) !== 1) {
-			http_response_code(400);
-			echo json_encode(['ok' => false, 'message' => 'ID timeline non valido.'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-			exit;
-		}
-
-		$filePath = $storageDir . '/' . $timelineId . '.json';
-
-		if (!is_file($filePath)) {
-			http_response_code(404);
-			echo json_encode(['ok' => false, 'message' => 'Timeline non trovata.'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-			exit;
-		}
-
-		$content = file_get_contents($filePath);
-		$decoded = json_decode($content ?: '{}', true);
-
-		if (!is_array($decoded) || !isset($decoded['adminToken']) || !hash_equals((string) $decoded['adminToken'], $adminToken)) {
-			http_response_code(403);
-			echo json_encode(['ok' => false, 'message' => 'Token admin non valido.'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-			exit;
-		}
-
-		unlink($filePath);
-
-		echo json_encode(['ok' => true], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-		exit;
-	} catch (Throwable $error) {
-		http_response_code(500);
-		echo json_encode([
-			'ok' => false,
-			'message' => 'Errore durante la cancellazione online: ' . $error->getMessage()
-		], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-		exit;
-	}
-
-}
-
-// ════════════════════════════════════════════════════════════════════
-// API: Salvataggio timeline online
-// ════════════════════════════════════════════════════════════════════
-if (($_GET['api'] ?? '') === 'save' && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
-	header('Content-Type: application/json; charset=utf-8');
-
-	try {
-		$rawBody = file_get_contents('php://input');
-		$payload = json_decode($rawBody ?: '{}', true, 512, JSON_THROW_ON_ERROR);
-
-		$events = $payload['events'] ?? null;
-		$title = isset($payload['title']) && is_string($payload['title']) ? trim($payload['title']) : 'Timeline';
-		$timelineId = isset($payload['timelineId']) && is_string($payload['timelineId'])
-			? trim($payload['timelineId'])
-			: '';
-		$adminToken = isset($payload['adminToken']) && is_string($payload['adminToken'])
-			? trim($payload['adminToken'])
-			: '';
-
-		if (!is_array($events)) {
-			http_response_code(400);
-			echo json_encode([
-				'ok' => false,
-				'message' => 'Payload non valido: eventi mancanti.'
-			], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-			exit;
-		}
-
-		$existingData = null;
-		$isUpdate = false;
-		if ($timelineId !== '' && preg_match('/^[a-f0-9]{12}$/', $timelineId) === 1) {
-			$filePath = $storageDir . '/' . $timelineId . '.json';
-			if (is_file($filePath)) {
-				$content = file_get_contents($filePath);
-				$decoded = json_decode($content ?: '{}', true);
-				if (is_array($decoded) && isset($decoded['adminToken']) && hash_equals((string) $decoded['adminToken'], $adminToken)) {
-					$existingData = $decoded;
-					$isUpdate = true;
-				}
-			}
-		}
-
-		if (!$isUpdate) {
-			do {
-				$timelineId = timeline_generate_id(6);
-				$filePath = $storageDir . '/' . $timelineId . '.json';
-			} while (is_file($filePath));
-
-			$adminToken = timeline_generate_id(16);
-			$viewerToken = timeline_generate_id(16);
-		} else {
-			$filePath = $storageDir . '/' . $timelineId . '.json';
-			$adminToken = (string) ($existingData['adminToken'] ?? '');
-			$viewerToken = (string) ($existingData['viewerToken'] ?? '');
-		}
-
-		$record = [
-			'updatedAt' => date(DATE_ATOM),
-			'title' => $title !== '' ? $title : 'Timeline',
-			'events' => array_values($events),
-			'adminToken' => $adminToken,
-			'viewerToken' => $viewerToken,
-			'version' => 1
-		];
-
-		if (!is_dir($storageDir)) {
-			throw new Exception("La cartella di storage non esiste e non può essere creata automaticamente. Verifica i permessi della cartella public_html.");
-		}
-		if (!is_writable($storageDir)) {
-			throw new Exception("La cartella di storage '" . basename($storageDir) . "' non è scrivibile dal server. Verifica i permessi (chmod/chown).");
-		}
-
-		$jsonRecord = json_encode($record, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-		if ($jsonRecord === false) {
-			throw new Exception("Errore durante la codifica JSON dei dati.");
-		}
-
-		if (file_put_contents($filePath, $jsonRecord) === false) {
-			throw new Exception("Impossibile scrivere il file sulla VPS. Controlla lo spazio disco o i permessi di scrittura.");
-		}
-
-		$urls = timeline_build_share_urls($timelineId, $adminToken, $viewerToken);
-
-
-		echo json_encode([
-			'ok' => true,
-			'timelineId' => $timelineId,
-			'adminToken' => $adminToken,
-			'viewerToken' => $viewerToken,
-			'adminUrl' => $urls['adminUrl'],
-			'viewerUrl' => $urls['viewerUrl']
-		], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-		exit;
-	} catch (Throwable $error) {
-		http_response_code(500);
-		echo json_encode([
-			'ok' => false,
-			'message' => 'Errore durante il salvataggio online: ' . $error->getMessage()
-		], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-		exit;
-	}
-
-}
-
-// ════════════════════════════════════════════════════════════════════
-// Modalità app (editor / viewer)
-// ════════════════════════════════════════════════════════════════════
-$appMode = 'editor';
-$sharedPayload = null;
-
-$timelineQueryId = isset($_GET['timeline']) && is_string($_GET['timeline']) ? trim($_GET['timeline']) : '';
-$adminQueryToken = isset($_GET['admin']) && is_string($_GET['admin']) ? trim($_GET['admin']) : '';
-$viewerQueryToken = isset($_GET['view']) && is_string($_GET['view']) ? trim($_GET['view']) : '';
-
-if ($timelineQueryId !== '' && preg_match('/^[a-f0-9]{12}$/', $timelineQueryId) === 1) {
-	$filePath = $storageDir . '/' . $timelineQueryId . '.json';
-	if (is_file($filePath)) {
-		$content = file_get_contents($filePath);
-		$decoded = json_decode($content ?: '{}', true);
-
-		if (is_array($decoded)) {
-			$storedAdmin = (string) ($decoded['adminToken'] ?? '');
-			$storedViewer = (string) ($decoded['viewerToken'] ?? '');
-			$canEdit = $adminQueryToken !== '' && $storedAdmin !== '' && hash_equals($storedAdmin, $adminQueryToken);
-			$canView = $viewerQueryToken !== '' && $storedViewer !== '' && hash_equals($storedViewer, $viewerQueryToken);
-
-			if ($canEdit || $canView) {
-				$appMode = $canView && !$canEdit ? 'viewer' : 'editor';
-				$urls = timeline_build_share_urls($timelineQueryId, $storedAdmin, $storedViewer);
-				$sharedPayload = [
-					'timelineId' => $timelineQueryId,
-					'adminToken' => $canEdit ? $storedAdmin : null,
-					'viewerToken' => $canEdit ? $storedViewer : null,
-					'adminUrl' => $canEdit ? $urls['adminUrl'] : '',
-					'viewerUrl' => $urls['viewerUrl'],
-					'title' => isset($decoded['title']) && is_string($decoded['title']) ? $decoded['title'] : 'Timeline',
-					'events' => isset($decoded['events']) && is_array($decoded['events']) ? $decoded['events'] : []
-				];
-			}
-		}
-	}
-}
-
-// ════════════════════════════════════════════════════════════════════
-// Rendering: include componenti modulari
-// ════════════════════════════════════════════════════════════════════
-include __DIR__ . '/includes/head.php';
 ?>
-<body>
-	<div class="container">
-		<div class="lang-menu-wrap">
-			<button type="button" id="langToggleBtn" class="lang-toggle-btn" aria-label="<?= htmlspecialchars(t('langToggleTitle')) ?>" title="<?= htmlspecialchars(t('langToggleTitle')) ?>"><?= htmlspecialchars(t('langToggleLabel')) ?></button>
-			<div id="langMenu" class="lang-menu hidden">
-<?php
-	$lang_labels = [
-		'it' => 'Italiano', 'en' => 'English', 'es' => 'Español',
-		'de' => 'Deutsch',  'fr' => 'Français', 'pt' => 'Português',
-		'ru' => 'Русский',  'tr' => 'Türkçe',   'ja' => '日本語',
-		'zh' => '中文',
-	];
-	foreach ($allowed_langs as $al):
-?>
-				<button type="button" class="lang-menu-btn" data-lang="<?= $al ?>"><?= $lang_labels[$al] ?? strtoupper($al) ?></button>
+<!DOCTYPE html>
+<html lang="<?= htmlspecialchars($lang_code) ?>">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<title><?= htmlspecialchars(t('page_title')) ?></title>
+	<meta name="description" content="<?= htmlspecialchars(t('page_description')) ?>">
+	<meta name="keywords" content="<?= htmlspecialchars($lang['page_keywords'] ?? '') ?>">
+	<meta name="author" content="SalernoHub">
+	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+	<link rel="canonical" href="https://timeline.salernohub.net/<?= $lang_code !== 'it' ? '?lang=' . $lang_code : '' ?>">
+<?php foreach ($allowed_langs as $al): ?>
+	<link rel="alternate" href="https://timeline.salernohub.net/<?= $al !== 'it' ? '?lang=' . $al : '' ?>" hreflang="<?= htmlspecialchars($al) ?>">
 <?php endforeach; ?>
+	<link rel="alternate" href="https://timeline.salernohub.net/" hreflang="x-default">
+	<meta property="og:type" content="website">
+	<meta property="og:locale" content="<?= htmlspecialchars($current_locale) ?>">
+	<meta property="og:site_name" content="Timeline SalernoHub">
+	<meta property="og:title" content="<?= htmlspecialchars(t('og_title')) ?>">
+	<meta property="og:description" content="<?= htmlspecialchars(t('og_description')) ?>">
+	<meta property="og:url" content="https://timeline.salernohub.net/<?= $lang_code !== 'it' ? '?lang=' . $lang_code : '' ?>">
+	<meta property="og:image" content="https://timeline.salernohub.net/assets/img/og-image.svg">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="<?= htmlspecialchars(t('og_title')) ?>">
+	<meta name="twitter:description" content="<?= htmlspecialchars(t('twitter_description')) ?>">
+	<meta name="application-name" content="Timeline SalernoHub">
+	<meta name="theme-color" content="#ffffff">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="default">
+	<script defer src="https://analytics.salernohub.net/script.js" data-website-id="1f14c9f6-0bbd-43e5-b917-115428e581ce"></script>
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "WebSite",
+		"name": "Timeline SalernoHub",
+		"url": "https://timeline.salernohub.net/",
+		"inLanguage": "<?= htmlspecialchars($current_locale) ?>",
+		"description": <?= json_encode(t('schema_description'), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
+	}
+	</script>
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "SoftwareApplication",
+		"name": "Timeline SalernoHub",
+		"applicationCategory": "EducationalApplication",
+		"operatingSystem": "Web",
+		"url": "https://timeline.salernohub.net/",
+		"offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+		"description": <?= json_encode(t('schema_app_description'), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
+	}
+	</script>
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "FAQPage",
+		"mainEntity": [
+			{
+				"@type": "Question",
+				"name": <?= json_encode(t('faq_q1'), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>,
+				"acceptedAnswer": { "@type": "Answer", "text": <?= json_encode(t('faq_a1'), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?> }
+			},
+			{
+				"@type": "Question",
+				"name": <?= json_encode(t('faq_q2'), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>,
+				"acceptedAnswer": { "@type": "Answer", "text": <?= json_encode(t('faq_a2'), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?> }
+			},
+			{
+				"@type": "Question",
+				"name": <?= json_encode(t('faq_q3'), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>,
+				"acceptedAnswer": { "@type": "Answer", "text": <?= json_encode(t('faq_a3'), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?> }
+			}
+		]
+	}
+	</script>
+	<link rel="stylesheet" href="assets/css/style-landing.css?v=<?= @filemtime('assets/css/style-landing.css') ?: time(); ?>">
+	<link rel="manifest" href="manifest.json">
+</head>
+<body class="landing-body">
+
+	<!-- ═══ HEADER / NAV ═══ -->
+	<header class="lp-header" id="lpHeader">
+		<div class="lp-header-inner">
+			<a href="/" class="lp-logo" aria-label="Timeline SalernoHub Home">
+				<span class="lp-logo-mark">
+					<svg viewBox="0 0 32 32" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+						<circle cx="16" cy="6" r="3"/>
+						<circle cx="16" cy="16" r="3"/>
+						<circle cx="16" cy="26" r="3"/>
+						<line x1="16" y1="9" x2="16" y2="13"/>
+						<line x1="16" y1="19" x2="16" y2="23"/>
+					</svg>
+				</span>
+				<span class="lp-logo-text">Timeline <strong>SalernoHub</strong></span>
+			</a>
+			<nav class="lp-nav" id="lpNav" aria-label="Navigazione principale">
+				<a href="#come-funziona">Come funziona</a>
+				<a href="#funzionalita">Funzionalità</a>
+				<a href="#esempi">Esempi</a>
+				<a href="#faq">FAQ</a>
+			</nav>
+			<div class="lp-header-actions">
+				<a href="editor.php" class="lp-btn lp-btn-sm lp-btn-primary">Inizia gratis</a>
+				<button type="button" class="lp-mobile-menu-btn" id="lpMobileMenuBtn" aria-label="Apri menu" aria-expanded="false">
+					<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+				</button>
 			</div>
 		</div>
-		<div class="top-content">
-			<h1 data-i18n="appTitle"><?= htmlspecialchars(t('appTitle')) ?></h1>
-			<div class="fab-stack top-actions">
-				<button type="button" class="fab-add" id="openFormBtn" aria-label="<?= htmlspecialchars(t('addEventLabel')) ?>">
-					<svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-				</button>
-				<div class="backup-wrap">
-					<button type="button" class="fab-backup" id="backupMenuBtn" aria-label="Backup" title="Backup">
-						<svg class="backup-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-							<path d="M12 13v8M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242M8 17l4 4 4-4"></path>
-						</svg>
-					</button>
-					<div class="backup-menu hidden" id="backupMenu" role="menu" aria-label="<?= htmlspecialchars(t('backupMenuAriaLabel')) ?>">
-						<div class="online-save-panel" id="onlineSavePanel">
-							<div class="online-save-field">
-								<label data-i18n="adminLinkLabel" for="adminLinkInput"><?= htmlspecialchars(t('adminLinkLabel')) ?></label>
-								<div class="online-save-input-row">
-									<input id="adminLinkInput" type="text" readonly placeholder="<?= htmlspecialchars(t('adminLinkPlaceholder')) ?>">
-									<button type="button" class="secondary copy-link-btn" id="copyAdminLinkBtn" aria-label="<?= htmlspecialchars(t('copyAdminLinkLabel')) ?>" title="<?= htmlspecialchars(t('copyAdminLinkLabel')) ?>">
-										<svg class="icon" viewBox="0 0 24 24">
-											<rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-											<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-										</svg>
-									</button>
-								</div>
+	</header>
+
+	<!-- ═══ HERO ═══ -->
+	<section class="lp-hero">
+		<div class="lp-hero-bg" aria-hidden="true">
+			<div class="lp-hero-orb lp-hero-orb--1"></div>
+			<div class="lp-hero-orb lp-hero-orb--2"></div>
+			<div class="lp-hero-orb lp-hero-orb--3"></div>
+		</div>
+		<div class="lp-hero-inner">
+			<div class="lp-hero-content" data-reveal>
+				<span class="lp-badge">100% Gratuito &middot; Nessuna registrazione</span>
+				<h1 class="lp-hero-title">Dai forma al tempo con timeline eleganti e professionali</h1>
+				<p class="lp-hero-sub"><?= htmlspecialchars(t('landingSubtitle')) ?></p>
+				<div class="lp-hero-cta">
+					<a href="editor.php" class="lp-btn lp-btn-lg lp-btn-primary">
+						Crea la tua timeline
+						<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+					</a>
+					<a href="#come-funziona" class="lp-btn lp-btn-lg lp-btn-ghost">Scopri come funziona</a>
+				</div>
+			</div>
+			<div class="lp-hero-visual" data-reveal data-reveal-delay="200">
+				<div class="lp-preview-card">
+					<div class="lp-preview-header">
+						<span class="lp-preview-dot"></span>
+						<span class="lp-preview-dot"></span>
+						<span class="lp-preview-dot"></span>
+					</div>
+					<div class="lp-preview-timeline">
+						<div class="lp-preview-line"></div>
+						<div class="lp-preview-event lp-preview-event--1">
+							<div class="lp-preview-node"></div>
+							<div class="lp-preview-label">
+								<strong>2019</strong>
+								<span>Inizio progetto</span>
 							</div>
-							<div class="online-save-field">
-								<label data-i18n="viewerLinkLabel" for="viewerLinkInput"><?= htmlspecialchars(t('viewerLinkLabel')) ?></label>
-								<div class="online-save-input-row">
-									<input id="viewerLinkInput" type="text" readonly placeholder="<?= htmlspecialchars(t('viewerLinkPlaceholder')) ?>">
-									<button type="button" class="secondary copy-link-btn" id="copyViewerLinkBtn" aria-label="<?= htmlspecialchars(t('copyViewerLinkLabel')) ?>" title="<?= htmlspecialchars(t('copyViewerLinkLabel')) ?>">
-										<svg class="icon" viewBox="0 0 24 24">
-											<rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-											<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-										</svg>
-									</button>
-								</div>
+						</div>
+						<div class="lp-preview-event lp-preview-event--2">
+							<div class="lp-preview-node"></div>
+							<div class="lp-preview-label">
+								<strong>2022</strong>
+								<span>Milestone raggiunta</span>
 							</div>
-							<div class="backup-actions-row">
-								<button type="button" class="secondary" id="downloadBtn" role="menuitem">
-									<svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5l5 5 5-5m-5 5V3"></path></svg>
-									<span data-i18n="downloadBtnText"><?= htmlspecialchars(t('downloadBtnText')) ?></span>
-								</button>
-								<button type="button" class="secondary" id="uploadBtn" role="menuitem">
-									<svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5m5-5v12"></path></svg>
-									<span data-i18n="importBtnText"><?= htmlspecialchars(t('importBtnText')) ?></span>
-								</button>
-								<button type="button" class="primary" id="saveOnlineBtn" role="menuitem">
-									<svg class="icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-									<span data-i18n="saveBtnText"><?= htmlspecialchars(t('saveBtnText')) ?></span>
-								</button>
+						</div>
+						<div class="lp-preview-event lp-preview-event--3">
+							<div class="lp-preview-node"></div>
+							<div class="lp-preview-label">
+								<strong>2026</strong>
+								<span>Presentazione finale</span>
 							</div>
 						</div>
 					</div>
 				</div>
-				<button type="button" class="fab-fullscreen" id="fullscreenBtn" aria-label="<?= htmlspecialchars(t('fullscreenEnterTitle')) ?>" title="<?= htmlspecialchars(t('fullscreenEnterTitle')) ?>">
-					<svg class="fullscreen-icon" id="fullscreenEnterIcon" viewBox="0 0 24 24">
-						<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-					</svg>
-					<svg class="fullscreen-icon hidden" id="fullscreenExitIcon" viewBox="0 0 24 24">
-						<path d="M4 14h6m0 0v6m0-6L3 21m17-7h-6m0 0v6m0-6l7 7M4 10h6m0 0V4m0 6L3 3m17 7h-6m0 0V4m0 6l7-7"></path>
-					</svg>
-				</button>
-				<button type="button" class="fab-theme" id="themeToggleBtn" aria-label="<?= htmlspecialchars(t('themeTitleDark')) ?>" title="<?= htmlspecialchars(t('themeTitleDark')) ?>">
-					<svg class="theme-icon theme-icon-moon" id="themeMoonIcon" viewBox="0 0 24 24">
-						<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-					</svg>
-					<svg class="theme-icon theme-icon-sun hidden" id="themeSunIcon" viewBox="0 0 24 24">
-						<circle cx="12" cy="12" r="5"></circle>
-						<path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M17.66 6.34l1.42-1.42"></path>
-					</svg>
-				</button>
-				<button type="button" class="muted timeline-reset-btn fab-reset hidden" id="resetTimelineBtn" aria-label="<?= htmlspecialchars(t('resetTimelineLabel')) ?>" title="<?= htmlspecialchars(t('resetTimelineTitle')) ?>">
-					<svg class="timeline-reset-icon" viewBox="0 0 24 24">
-						<path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m-6 5v6m4-6v6"></path>
-					</svg>
-				</button>
-				<input id="uploadInput" class="hidden" type="file" accept="application/json">
 			</div>
 		</div>
+	</section>
 
-		<section class="card timeline-section">
-			<div class="timeline-topbar">
-				<div class="timeline-header">
-					<h2 id="timelineTitle">Timeline</h2>
-					<button type="button" class="muted timeline-title-edit" id="editTimelineTitleBtn" aria-label="<?= htmlspecialchars(t('editTitleLabel')) ?>" title="<?= htmlspecialchars(t('editTitleTitle')) ?>">
-						<svg class="icon" viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-					</button>
+	<!-- ═══ COME FUNZIONA ═══ -->
+	<section class="lp-section" id="come-funziona">
+		<div class="lp-section-inner">
+			<div class="lp-section-header" data-reveal>
+				<span class="lp-section-label">Semplicissimo</span>
+				<h2>Come funziona</h2>
+				<p>Tre passaggi per creare, condividere e presentare la tua linea temporale.</p>
+			</div>
+			<div class="lp-steps">
+				<article class="lp-step" data-reveal>
+					<div class="lp-step-num">1</div>
+					<div class="lp-step-icon">
+						<svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+					</div>
+					<h3>Inserisci eventi</h3>
+					<p>Aggiungi date, titoli, descrizioni e immagini per ogni tappa della tua storia.</p>
+				</article>
+				<article class="lp-step" data-reveal data-reveal-delay="120">
+					<div class="lp-step-num">2</div>
+					<div class="lp-step-icon">
+						<svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+					</div>
+					<h3>Salva e condividi</h3>
+					<p>Ottieni un link admin per modificare e un link pubblico per condividere senza rischi.</p>
+				</article>
+				<article class="lp-step" data-reveal data-reveal-delay="240">
+					<div class="lp-step-num">3</div>
+					<div class="lp-step-icon">
+						<svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+					</div>
+					<h3>Presenta con stile</h3>
+					<p>Modalità fullscreen, zoom e tema scuro per lezioni, riunioni e storytelling.</p>
+				</article>
+			</div>
+		</div>
+	</section>
+
+	<!-- ═══ FUNZIONALITÀ ═══ -->
+	<section class="lp-section lp-section--alt" id="funzionalita">
+		<div class="lp-section-inner">
+			<div class="lp-section-header" data-reveal>
+				<span class="lp-section-label">Tutto incluso</span>
+				<h2>Funzionalità principali</h2>
+				<p>Strumenti potenti senza complessità — tutto nel tuo browser.</p>
+			</div>
+			<div class="lp-features-grid">
+				<div class="lp-feature" data-reveal>
+					<div class="lp-feature-icon">
+						<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+					</div>
+					<h3>Editor intuitivo</h3>
+					<p>Aggiunta rapida di eventi con data, titolo, descrizione e immagini. Drag &amp; drop incluso.</p>
 				</div>
-				<div class="timeline-right-controls">
-					<div class="viewer-actions hidden" id="viewerActions" aria-label="<?= htmlspecialchars(t('viewerActionsLabel')) ?>">
-						<button type="button" class="primary viewer-action-btn" id="viewerCreateBtn">
-							<svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-							<span data-i18n="viewerCreateBtnText"><?= htmlspecialchars(t('viewerCreateBtnText')) ?></span>
-						</button>
-						<button type="button" class="secondary viewer-action-btn viewer-icon-btn" id="viewerDownloadBtn" aria-label="<?= htmlspecialchars(t('viewerDownloadLabel')) ?>" title="<?= htmlspecialchars(t('viewerDownloadLabel')) ?>">
-							<svg class="viewer-action-icon" viewBox="0 0 24 24">
-								<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5l5 5 5-5m-5 5V3"></path>
-							</svg>
-						</button>
-						<button type="button" class="secondary viewer-action-btn viewer-icon-btn" id="viewerFullscreenBtn" aria-label="<?= htmlspecialchars(t('fullscreenEnterTitle')) ?>" title="<?= htmlspecialchars(t('fullscreenEnterTitle')) ?>">
-							<svg class="viewer-action-icon" id="viewerFullscreenEnterIcon" viewBox="0 0 24 24">
-								<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-							</svg>
-							<svg class="viewer-action-icon hidden" id="viewerFullscreenExitIcon" viewBox="0 0 24 24">
-								<path d="M4 14h6m0 0v6m0-6L3 21m17-7h-6m0 0v6m0-6l7 7M4 10h6m0 0V4m0 6L3 3m17 7h-6m0 0V4m0 6l7-7"></path>
-							</svg>
-						</button>
+				<div class="lp-feature" data-reveal data-reveal-delay="80">
+					<div class="lp-feature-icon">
+						<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
 					</div>
-						<div class="timeline-zoom-controls" data-i18n-aria-label="zoomControlsLabel" aria-label="<?= htmlspecialchars(t('zoomControlsLabel')) ?>">
-						<button type="button" class="muted timeline-zoom-btn" id="zoomOutBtn" aria-label="<?= htmlspecialchars(t('zoomOutLabel')) ?>" title="<?= htmlspecialchars(t('zoomOutTitle')) ?>">
-							<svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14"></path></svg>
-						</button>
-						<button type="button" class="muted timeline-zoom-btn" id="zoomInBtn" aria-label="<?= htmlspecialchars(t('zoomInLabel')) ?>" title="<?= htmlspecialchars(t('zoomInTitle')) ?>">
-							<svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
-						</button>
+					<h3>Tema chiaro e scuro</h3>
+					<p>Switch automatico con preferenze di sistema o toggle manuale.</p>
+				</div>
+				<div class="lp-feature" data-reveal data-reveal-delay="160">
+					<div class="lp-feature-icon">
+						<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
 					</div>
+					<h3>Condivisione sicura</h3>
+					<p>Link admin con token privato e link viewer per la visualizzazione pubblica.</p>
+				</div>
+				<div class="lp-feature" data-reveal data-reveal-delay="240">
+					<div class="lp-feature-icon">
+						<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+					</div>
+					<h3>Fullscreen &amp; Zoom</h3>
+					<p>Presentazioni a schermo intero con controlli di zoom per ogni dettaglio.</p>
+				</div>
+				<div class="lp-feature" data-reveal data-reveal-delay="320">
+					<div class="lp-feature-icon">
+						<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+					</div>
+					<h3>Import/Export JSON</h3>
+					<p>Scarica i tuoi dati, importali su un altro dispositivo, nessun lock-in.</p>
+				</div>
+				<div class="lp-feature" data-reveal data-reveal-delay="400">
+					<div class="lp-feature-icon">
+						<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+					</div>
+					<h3>10 lingue supportate</h3>
+					<p>Interfaccia multilingua: italiano, inglese, spagnolo, tedesco, francese e altre.</p>
 				</div>
 			</div>
-			<div id="timeline" class="timeline"></div>
-		</section>
+		</div>
+	</section>
 
-<?php include __DIR__ . '/includes/modals.php'; ?>
-<?php include __DIR__ . '/includes/footer.php'; ?>
+	<!-- ═══ ESEMPI ═══ -->
+	<section class="lp-section" id="esempi">
+		<div class="lp-section-inner">
+			<div class="lp-section-header" data-reveal>
+				<span class="lp-section-label">Casi d'uso</span>
+				<h2>Perfetta per ogni occasione</h2>
+				<p>Dalla scuola al lavoro, dagli eventi personali ai progetti creativi.</p>
+			</div>
+			<div class="lp-examples-grid">
+				<article class="lp-example" data-reveal>
+					<div class="lp-example-emoji">🎓</div>
+					<h3>Scuola e università</h3>
+					<p>Rivoluzioni storiche, cronologie scientifiche, letteratura e programmi didattici.</p>
+				</article>
+				<article class="lp-example" data-reveal data-reveal-delay="100">
+					<div class="lp-example-emoji">💼</div>
+					<h3>Lavoro e project management</h3>
+					<p>Roadmap di prodotto, milestone di progetto, piani marketing e avanzamento team.</p>
+				</article>
+				<article class="lp-example" data-reveal data-reveal-delay="200">
+					<div class="lp-example-emoji">🌍</div>
+					<h3>Viaggi e vita personale</h3>
+					<p>Diari di viaggio, anniversari, tappe familiari e percorsi formativi.</p>
+				</article>
+				<article class="lp-example" data-reveal data-reveal-delay="300">
+					<div class="lp-example-emoji">⛪</div>
+					<h3>Storia e religione</h3>
+					<p>Linee del tempo religiose, cronologie storiche, eventi epocali e tradizioni.</p>
+				</article>
+			</div>
+		</div>
+	</section>
+
+	<!-- ═══ FAQ ═══ -->
+	<section class="lp-section lp-section--alt" id="faq">
+		<div class="lp-section-inner lp-section-inner--narrow">
+			<div class="lp-section-header" data-reveal>
+				<span class="lp-section-label">Domande frequenti</span>
+				<h2>FAQ</h2>
+			</div>
+			<div class="lp-faq-list">
+				<details class="lp-faq" data-reveal>
+					<summary><?= htmlspecialchars(t('faq_q1')) ?></summary>
+					<p><?= htmlspecialchars(t('faq_a1')) ?></p>
+				</details>
+				<details class="lp-faq" data-reveal data-reveal-delay="80">
+					<summary><?= htmlspecialchars(t('faq_q2')) ?></summary>
+					<p><?= htmlspecialchars(t('faq_a2')) ?></p>
+				</details>
+				<details class="lp-faq" data-reveal data-reveal-delay="160">
+					<summary><?= htmlspecialchars(t('faq_q3')) ?></summary>
+					<p><?= htmlspecialchars(t('faq_a3')) ?></p>
+				</details>
+				<details class="lp-faq" data-reveal data-reveal-delay="240">
+					<summary>Devo registrarmi per usare il servizio?</summary>
+					<p>No, Timeline SalernoHub è completamente gratuito e non richiede alcuna registrazione. Puoi iniziare subito a creare la tua linea temporale.</p>
+				</details>
+				<details class="lp-faq" data-reveal data-reveal-delay="320">
+					<summary>I miei dati sono al sicuro?</summary>
+					<p>I tuoi eventi vengono salvati localmente nel browser. Se scegli di salvare online, i dati sono protetti da token privati e puoi cancellarli in qualsiasi momento.</p>
+				</details>
+			</div>
+		</div>
+	</section>
+
+	<!-- ═══ CTA FINALE ═══ -->
+	<section class="lp-cta-section">
+		<div class="lp-cta-inner" data-reveal>
+			<h2>Pronto a raccontare la tua storia?</h2>
+			<p>Crea la tua prima timeline in meno di un minuto. Gratuito, senza registrazione.</p>
+			<a href="editor.php" class="lp-btn lp-btn-lg lp-btn-white">
+				Inizia ora
+				<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+			</a>
+		</div>
+	</section>
+
+	<!-- ═══ FOOTER ═══ -->
+	<footer class="lp-footer">
+		<div class="lp-footer-inner">
+			<div class="lp-footer-brand">
+				<a href="/" class="lp-logo lp-logo--footer" aria-label="Timeline SalernoHub">
+					<span class="lp-logo-mark">
+						<svg viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+							<circle cx="16" cy="6" r="3"/><circle cx="16" cy="16" r="3"/><circle cx="16" cy="26" r="3"/>
+							<line x1="16" y1="9" x2="16" y2="13"/><line x1="16" y1="19" x2="16" y2="23"/>
+						</svg>
+					</span>
+					<span class="lp-logo-text">Timeline <strong>SalernoHub</strong></span>
+				</a>
+				<p class="lp-footer-desc">Crea linee temporali personalizzate online per studio, lavoro ed eventi. Gratuito e senza registrazione.</p>
+			</div>
+			<div class="lp-footer-links">
+				<div class="lp-footer-col">
+					<h4>Prodotto</h4>
+					<a href="editor.php">Editor Timeline</a>
+					<a href="#funzionalita">Funzionalità</a>
+					<a href="#come-funziona">Come funziona</a>
+				</div>
+				<div class="lp-footer-col">
+					<h4>Risorse</h4>
+					<a href="#faq">FAQ</a>
+					<a href="#esempi">Esempi d'uso</a>
+				</div>
+				<div class="lp-footer-col">
+					<h4>Contatti</h4>
+					<a href="https://salernohub.net" target="_blank" rel="noopener">SalernoHub.net</a>
+					<a href="mailto:salernohub@gmail.com">salernohub@gmail.com</a>
+				</div>
+			</div>
+		</div>
+		<div class="lp-footer-bottom">
+			<span>Copyright &copy; <?php echo date('Y'); ?> <a href="https://salernohub.net" target="_blank" rel="noopener">SalernoHUB</a></span>
+			<span class="lp-footer-sep">&middot;</span>
+			<a href="mailto:salernohub@gmail.com">Contatti</a>
+		</div>
+	</footer>
+
+	<!-- ═══ Script: scroll reveal + mobile menu ═══ -->
+	<script>
+	(function() {
+		/* ── Header scroll ── */
+		var header = document.getElementById('lpHeader');
+		window.addEventListener('scroll', function() {
+			header.classList.toggle('lp-header--scrolled', window.scrollY > 40);
+		}, { passive: true });
+
+		/* ── Mobile menu ── */
+		var menuBtn = document.getElementById('lpMobileMenuBtn');
+		var nav = document.getElementById('lpNav');
+		if (menuBtn && nav) {
+			menuBtn.addEventListener('click', function() {
+				var open = nav.classList.toggle('lp-nav--open');
+				menuBtn.setAttribute('aria-expanded', String(open));
+			});
+			nav.querySelectorAll('a').forEach(function(a) {
+				a.addEventListener('click', function() {
+					nav.classList.remove('lp-nav--open');
+					menuBtn.setAttribute('aria-expanded', 'false');
+				});
+			});
+		}
+
+		/* ── Scroll reveal (IntersectionObserver) ── */
+		var reveals = document.querySelectorAll('[data-reveal]');
+		if ('IntersectionObserver' in window && reveals.length) {
+			var observer = new IntersectionObserver(function(entries) {
+				entries.forEach(function(entry) {
+					if (entry.isIntersecting) {
+						var delay = parseInt(entry.target.dataset.revealDelay || '0', 10);
+						setTimeout(function() {
+							entry.target.classList.add('revealed');
+						}, delay);
+						observer.unobserve(entry.target);
+					}
+				});
+			}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+			reveals.forEach(function(el) { observer.observe(el); });
+		} else {
+			reveals.forEach(function(el) { el.classList.add('revealed'); });
+		}
+
+		/* ── Smooth scroll per anchor ── */
+		document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+			a.addEventListener('click', function(e) {
+				var target = document.querySelector(this.getAttribute('href'));
+				if (target) {
+					e.preventDefault();
+					target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+				}
+			});
+		});
+	})();
+	</script>
+</body>
+</html>

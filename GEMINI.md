@@ -7,6 +7,7 @@ Operi su un'architettura a 3 livelli per siti performanti, multilingua e pronti 
 ### Livello 1: Direttiva (Strategia)
 - Documenti in `directives/`: `seo_strategy.md`, `pwa_config.json`.
 - **Copyright Dinamico**: Il footer deve sempre usare `<?php echo date('Y'); ?>` per l'aggiornamento automatico dell'anno.
+- **Documentazione Legale**: Inserire sempre un link a "Termini e Condizioni" (o Privacy Policy) nel footer. Valutare ogni volta i testi più appropriati in base alla natura del sito (es. limitazione responsabilità per tool, privacy per blog).
 
 ### Livello 2: Orchestrazione (Logica e Temi)
 - **Gestione Lingue**: Rilevamento tramite `?lang=`, sessione o cookie.
@@ -60,7 +61,7 @@ Per rendere il sito scaricabile come App, includi sempre:
 ### Copyright & Footer (Footer.php)
 ```php
 <footer>
-    <span>Copyright &copy; <?php echo date('Y'); ?> <a href="https://salernohub.net" target="_blank" rel="noopener" class="footer-contact">SalernoHUB</a> | <a href="mailto:salernohub@gmail.com" class="footer-contact">Contatti</a></span>
+    <span>Copyright &copy; <?php echo date('Y'); ?> <a href="https://salernohub.net" target="_blank" rel="noopener" class="footer-contact">SalernoHUB</a> | <a href="terms.php" class="footer-contact"><?php echo $lang['terms_and_conditions']; ?></a> | <a href="mailto:salernohub@gmail.com" class="footer-contact"><?php echo $lang['contacts']; ?></a></span>
 </footer>
 ```
 

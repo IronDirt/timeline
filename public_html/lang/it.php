@@ -122,4 +122,7 @@ return [
     'deleteConfirmText'           => 'Sei sicuro di voler eliminare questo evento?',
     'deleteConfirmCancel'         => 'Annulla',
     'deleteConfirmBtn'            => 'Elimina',
+    'landingSubtitle'             => 'Crea splendide linee temporali personalizzate online per studio, lavoro ed eventi. Tutto completamente gratuito.',
+    'landingCreateBtn'            => 'Crea nuova linea temporale',
+    'landingContinueBtn'          => 'Continua la tua linea temporale',
 ];
