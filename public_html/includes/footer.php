@@ -10,7 +10,7 @@
 		<div class="footer-container">
 			<div class="footer-item footer-left"></div>
 			<div class="footer-item footer-center">
-				<span>Copyright &copy; <?php echo date('Y'); ?> <a href="https://salernohub.net" target="_blank" rel="noopener" class="footer-contact">SalernoHUB</a> | <a href="mailto:salernohub@gmail.com" class="footer-contact">Contatti</a></span>
+				<span>Copyright &copy; <?php echo date('Y'); ?> <a href="https://salernohub.net" target="_blank" rel="noopener" class="footer-contact">SalernoHUB</a> | <a href="terms.php" class="footer-contact"><?php echo $lang['terms_and_conditions'] ?? 'Termini e Condizioni'; ?></a> | <a href="mailto:salernohub@gmail.com" class="footer-contact"><?php echo $lang['contacts'] ?? 'Contatti'; ?></a></span>
 			</div>
 			<div class="footer-item footer-right"></div>
 		</div>

@@ -125,4 +125,18 @@ return [
     'landingSubtitle'             => 'Create beautiful custom timelines online for study, work, and events. Completely free.',
     'landingCreateBtn'            => 'Create new timeline',
     'landingContinueBtn'          => 'Continue your timeline',
+
+    // ── Terms & Conditions ──
+    'terms_title' => 'Terms and Conditions',
+    'terms_last_updated' => 'Last updated: April 12, 2026',
+    'terms_intro' => 'Welcome to Timeline SalernoHub. By using our free timeline creation tool (the "Service"), you agree to the following terms. If you do not agree with them, please do not use the Service.',
+    'terms_h1' => '1. Use of the Service and Nature of the Tool',
+    'terms_p1' => 'Timeline SalernoHub is a free, registration-free tool provided on an "as is" basis. It is intended to easily build timelines for school, work, and personal needs. We do not guarantee uninterrupted availability of the Service and are not responsible for any data loss.',
+    'terms_h2' => '2. Data Storage and Privacy',
+    'terms_p2' => 'Your timeline data is saved exclusively locally in your browser (via localStorage) by default. Only if you actively choose the "Save Online" feature, the data is synced to our servers, generating a publicly accessible link (only known to those who hold it). It is the user\'s sole responsibility not to enter sensitive, confidential, or private data. SalernoHub reserves the right to delete online saved timelines for prolonged inactivity or server maintenance.',
+    'terms_h3' => '3. Limitation of Liability',
+    'terms_p3' => 'The use of the service is at the user\'s own risk. We strongly encourage you to frequently back up your data by exporting your timelines ("Download" function). SalernoHub (its developers and affiliates) disclaims any liability for any direct, indirect damages, loss or accidental disclosure of the project information.',
+    'terms_h4' => '4. Changes to Terms',
+    'terms_p4' => 'We reserve the right to suspend or discontinue the service at any time and to update these Terms when necessary. Continued use will imply the acceptance of the updated document.',
 ];
+$lang['terms_and_conditions'] = 'Terms and Conditions';

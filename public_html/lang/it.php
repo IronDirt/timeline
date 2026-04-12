@@ -125,4 +125,18 @@ return [
     'landingSubtitle'             => 'Crea splendide linee temporali personalizzate online per studio, lavoro ed eventi. Tutto completamente gratuito.',
     'landingCreateBtn'            => 'Crea nuova linea temporale',
     'landingContinueBtn'          => 'Continua la tua linea temporale',
+
+    // ── Termini e Condizioni ──
+    'terms_title' => 'Termini e Condizioni',
+    'terms_last_updated' => 'Ultimo aggiornamento: 12 Aprile 2026',
+    'terms_intro' => 'Benvenuto su Timeline SalernoHub. Utilizzando il nostro strumento gratuito di creazione linee temporali (il "Servizio"), accetti i seguenti termini. Se non sei d’accordo, ti preghiamo di non utilizzare il Servizio.',
+    'terms_h1' => '1. Uso del Servizio e Natura dello Strumento',
+    'terms_p1' => 'Timeline SalernoHub è uno strumento gratuito e senza registrazione fornito "così com\'è". È progettato per la creazione veloce di linee temporali (scolastica, lavorativa, personale). Non garantiamo la disponibilità ininterrotta del Servizio e non siamo responsabili in caso di perdita di dati.',
+    'terms_h2' => '2. Salvataggio Dati e Privacy',
+    'terms_p2' => 'I dati delle tue timeline vengono salvati esclusivamente in locale sul tuo browser (tramite localStorage) per default. Solo se scegli attivamente la funzione "Salva online", i dati vengono sincronizzati sui nostri server, generando un link accessibile pubblicamente (noto solo a chi vi ha accesso). È esclusiva responsabilità dell\'utente evitare di inserire dati sensibili, confidenziali o tutelati da privacy. SalernoHub si riserva il diritto di rimuovere le timeline salvate online per inattività prolungata o per manutenzione dei server.',
+    'terms_h3' => '3. Limitazione di Responsabilità',
+    'terms_p3' => 'L\'uso del servizio è a rischio dell\'utente. Ti incoraggiamo a effettuare frequenti backup esportando le tue timeline (funzione "Scarica"). SalernoHub (i suoi sviluppatori e affiliati) declina ogni responsabilità per eventuali danni diretti, indiretti, smarrimento o diffusione accidentale delle informazioni dei tuoi progetti.',
+    'terms_h4' => '4. Modifiche ai Termini',
+    'terms_p4' => 'Ci riserviamo il diritto di sospendere o interrompere il servizio in qualsiasi momento e di aggiornare questi Termini ove necessario. L\'uso continuato implicherà l\'accettazione del nuovo documento.',
 ];
+$lang['terms_and_conditions'] = 'Termini e Condizioni';

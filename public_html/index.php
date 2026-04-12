@@ -99,15 +99,7 @@ if ($hasTimeline || $hasApi || $hasNew) {
 	<header class="lp-header" id="lpHeader">
 		<div class="lp-header-inner">
 			<a href="/" class="lp-logo" aria-label="Timeline SalernoHub Home">
-				<span class="lp-logo-mark">
-					<svg viewBox="0 0 32 32" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-						<circle cx="16" cy="6" r="3"/>
-						<circle cx="16" cy="16" r="3"/>
-						<circle cx="16" cy="26" r="3"/>
-						<line x1="16" y1="9" x2="16" y2="13"/>
-						<line x1="16" y1="19" x2="16" y2="23"/>
-					</svg>
-				</span>
+				<img src="assets/img/icon-192.png" alt="Timeline SalernoHub" class="lp-logo-img">
 				<span class="lp-logo-text">Timeline <strong>SalernoHub</strong></span>
 			</a>
 			<nav class="lp-nav" id="lpNav" aria-label="Navigazione principale">
@@ -143,39 +135,6 @@ if ($hasTimeline || $hasApi || $hasNew) {
 						<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
 					</a>
 					<a href="#come-funziona" class="lp-btn lp-btn-lg lp-btn-ghost">Scopri come funziona</a>
-				</div>
-			</div>
-			<div class="lp-hero-visual" data-reveal data-reveal-delay="200">
-				<div class="lp-preview-card">
-					<div class="lp-preview-header">
-						<span class="lp-preview-dot"></span>
-						<span class="lp-preview-dot"></span>
-						<span class="lp-preview-dot"></span>
-					</div>
-					<div class="lp-preview-timeline">
-						<div class="lp-preview-line"></div>
-						<div class="lp-preview-event lp-preview-event--1">
-							<div class="lp-preview-node"></div>
-							<div class="lp-preview-label">
-								<strong>2019</strong>
-								<span>Inizio progetto</span>
-							</div>
-						</div>
-						<div class="lp-preview-event lp-preview-event--2">
-							<div class="lp-preview-node"></div>
-							<div class="lp-preview-label">
-								<strong>2022</strong>
-								<span>Milestone raggiunta</span>
-							</div>
-						</div>
-						<div class="lp-preview-event lp-preview-event--3">
-							<div class="lp-preview-node"></div>
-							<div class="lp-preview-label">
-								<strong>2026</strong>
-								<span>Presentazione finale</span>
-							</div>
-						</div>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -283,22 +242,42 @@ if ($hasTimeline || $hasApi || $hasNew) {
 			</div>
 			<div class="lp-examples-grid">
 				<article class="lp-example" data-reveal>
-					<div class="lp-example-emoji">🎓</div>
+					<div class="lp-example-icon">
+						<svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+							<path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/>
+						</svg>
+					</div>
 					<h3>Scuola e università</h3>
 					<p>Rivoluzioni storiche, cronologie scientifiche, letteratura e programmi didattici.</p>
 				</article>
 				<article class="lp-example" data-reveal data-reveal-delay="100">
-					<div class="lp-example-emoji">💼</div>
+					<div class="lp-example-icon">
+						<svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+							<rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+							<path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+						</svg>
+					</div>
 					<h3>Lavoro e project management</h3>
 					<p>Roadmap di prodotto, milestone di progetto, piani marketing e avanzamento team.</p>
 				</article>
 				<article class="lp-example" data-reveal data-reveal-delay="200">
-					<div class="lp-example-emoji">🌍</div>
+					<div class="lp-example-icon">
+						<svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+							<polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+							<line x1="9" y1="3" x2="9" y2="18"/>
+							<line x1="15" y1="6" x2="15" y2="21"/>
+						</svg>
+					</div>
 					<h3>Viaggi e vita personale</h3>
 					<p>Diari di viaggio, anniversari, tappe familiari e percorsi formativi.</p>
 				</article>
 				<article class="lp-example" data-reveal data-reveal-delay="300">
-					<div class="lp-example-emoji">⛪</div>
+					<div class="lp-example-icon">
+						<svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M2 22h20 M4 22v-8 M8 22v-8 M12 22v-8 M16 22v-8 M20 22v-8 M2 14h20 M12 3l10 7H2L12 3z"/>
+						</svg>
+					</div>
 					<h3>Storia e religione</h3>
 					<p>Linee del tempo religiose, cronologie storiche, eventi epocali e tradizioni.</p>
 				</article>
@@ -352,42 +331,8 @@ if ($hasTimeline || $hasApi || $hasNew) {
 
 	<!-- ═══ FOOTER ═══ -->
 	<footer class="lp-footer">
-		<div class="lp-footer-inner">
-			<div class="lp-footer-brand">
-				<a href="/" class="lp-logo lp-logo--footer" aria-label="Timeline SalernoHub">
-					<span class="lp-logo-mark">
-						<svg viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-							<circle cx="16" cy="6" r="3"/><circle cx="16" cy="16" r="3"/><circle cx="16" cy="26" r="3"/>
-							<line x1="16" y1="9" x2="16" y2="13"/><line x1="16" y1="19" x2="16" y2="23"/>
-						</svg>
-					</span>
-					<span class="lp-logo-text">Timeline <strong>SalernoHub</strong></span>
-				</a>
-				<p class="lp-footer-desc">Crea linee temporali personalizzate online per studio, lavoro ed eventi. Gratuito e senza registrazione.</p>
-			</div>
-			<div class="lp-footer-links">
-				<div class="lp-footer-col">
-					<h4>Prodotto</h4>
-					<a href="editor.php">Editor Timeline</a>
-					<a href="#funzionalita">Funzionalità</a>
-					<a href="#come-funziona">Come funziona</a>
-				</div>
-				<div class="lp-footer-col">
-					<h4>Risorse</h4>
-					<a href="#faq">FAQ</a>
-					<a href="#esempi">Esempi d'uso</a>
-				</div>
-				<div class="lp-footer-col">
-					<h4>Contatti</h4>
-					<a href="https://salernohub.net" target="_blank" rel="noopener">SalernoHub.net</a>
-					<a href="mailto:salernohub@gmail.com">salernohub@gmail.com</a>
-				</div>
-			</div>
-		</div>
 		<div class="lp-footer-bottom">
-			<span>Copyright &copy; <?php echo date('Y'); ?> <a href="https://salernohub.net" target="_blank" rel="noopener">SalernoHUB</a></span>
-			<span class="lp-footer-sep">&middot;</span>
-			<a href="mailto:salernohub@gmail.com">Contatti</a>
+			<span>Copyright &copy; <?php echo date('Y'); ?> <a href="https://salernohub.net" target="_blank" rel="noopener" class="footer-contact">SalernoHUB</a> | <a href="terms.php" class="footer-contact"><?php echo $lang['terms_and_conditions'] ?? 'Termini e Condizioni'; ?></a> | <a href="mailto:salernohub@gmail.com" class="footer-contact"><?php echo $lang['contacts'] ?? 'Contatti'; ?></a></span>
 		</div>
 	</footer>
 
